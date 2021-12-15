@@ -475,7 +475,7 @@ export default {
         }
     },
     created(){
-        console.log(this.REGION, this.S3_BUCKET, "PROFILEID LOGGING")
+        console.log(process.env.VUE_APP_BUCKET_NAME, process.env.VUE_APP_BUCKET_REGION, "PRINTING CONFIG VARS HEROKU")
     },
     updated() {
         console.log(this.inMemoryImages, this.imageBlobList, "SELL BOOK UPDATED")
