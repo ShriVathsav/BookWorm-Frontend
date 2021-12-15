@@ -1,0 +1,17 @@
+::selection {
+    color: white;
+    background: #9c27b0;
+}
+
+::-moz-selection {
+    color: white;
+    background: #9c27b0;
+}
+
+a,
+a:link,
+a:hover,
+a:visited {
+    color: #9c27b0;
+    font-weight: 700;
+}

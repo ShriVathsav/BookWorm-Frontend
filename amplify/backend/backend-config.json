@@ -1,0 +1,10 @@
+{
+  "auth": {
+    "amplifybookstore81763681": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  }
+}
