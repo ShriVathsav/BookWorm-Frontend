@@ -213,6 +213,7 @@ import rightArrow from "../../static/Icons/OtherIcons/rightArrow2.svg"
 import sellBookIcon from "../../static/Icons/AuthIcons/sellBookIcon.svg"
 import { v4 as uuidv4 } from 'uuid';
 import AWS from 'aws-sdk'
+require('dotenv').config();
 
 export default {
     name: "SellBook",
@@ -475,7 +476,7 @@ export default {
         }
     },
     created(){
-        console.log(process.env.VUE_APP_BUCKET_NAME, process.env.VUE_APP_BUCKET_REGION, "PRINTING CONFIG VARS HEROKU")
+        console.log(process.env, process.env.VUE_APP_BUCKET_NAME, process.env.VUE_APP_BUCKET_REGION, "PRINTING CONFIG VARS HEROKU")
     },
     updated() {
         console.log(this.inMemoryImages, this.imageBlobList, "SELL BOOK UPDATED")
