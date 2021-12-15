@@ -57,12 +57,12 @@ export default {
     props: ["book"],
     data() {
         return {
-            s3Bucket: "bookwormgolangbucket",
-            region: "ap-south-1",
+            s3Bucket: process.env.BUCKET_NAME,
+            region: process.env.BUCKET_REGION,
             myBucket: new AWS.S3({
                 params: { Bucket: this.s3Bucket},
                 signatureVersion: 'v4',
-                region: "ap-south-1"
+                region: this.region
             }),
             coverImageUrl: null,
             sellingPriceIcon,
@@ -99,8 +99,8 @@ export default {
     },
     beforeCreate(){
         AWS.config.update({
-            accessKeyId: 'AKIA4T2BSWAEEVLL4LTA',
-            secretAccessKey: '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'
+            accessKeyId: process.env.ACCESS_KEY,
+            secretAccessKey: process.env.SECRET_ACCESS_KEY
         })
     }
 }
