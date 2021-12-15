@@ -247,8 +247,8 @@ export default {
     props: [],
     data() {
         return {
-            s3Bucket: process.env.BUCKET_NAME,
-            region: process.env.BUCKET_REGION,
+            s3Bucket: process.env.VUE_APP_BUCKET_NAME,
+            region: process.env.VUE_APP_BUCKET_REGION,
             myBucket: new AWS.S3({
                 params: { Bucket: this.s3Bucket},
                 signatureVersion: 'v4',
@@ -449,8 +449,8 @@ export default {
     },
     beforeCreate(){
         AWS.config.update({
-            accessKeyId: process.env.ACCESS_KEY,
-            secretAccessKey: process.env.SECRET_ACCESS_KEY
+            accessKeyId: process.env.VUE_APP_ACCESS_KEY,
+            secretAccessKey: process.env.VUE_APP_SECRET_ACCESS_KEY
         })
     }
 }
