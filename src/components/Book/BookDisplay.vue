@@ -233,7 +233,8 @@ import addReviewIcon from "../../static/Icons/BookDisplayIcons/addReview.svg"
 import editBookIcon from "../../static/Icons/BookDisplayIcons/editBook.svg"
 import deleteBookIcon from "../../static/Icons/BookDisplayIcons/deleteBook2.svg"
 import AWS from 'aws-sdk'
-require('dotenv').config();
+import dotenv from "dotenv"
+dotenv.config()
 //import { API, graphqlOperation } from 'aws-amplify'
 //import {getBook as GetBook} from "../../graphql/queries"
 //const API_URL1 = "https://4j5jc4gcn7.execute-api.ap-south-1.amazonaws.com/dev"

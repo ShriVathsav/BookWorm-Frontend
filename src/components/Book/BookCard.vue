@@ -50,7 +50,8 @@ import outOfStockIcon from "../../static/Icons/BookDisplayIcons/outOfStock.svg"
 import noBookImagesIcon from "../../static/Images/noBookImagesAlt.png"
 import moment from 'moment'
 import AWS from 'aws-sdk'
-require('dotenv').config();
+import dotenv from "dotenv"
+dotenv.config()
 
 export default {
     name: "BookCard",

@@ -213,7 +213,8 @@ import rightArrow from "../../static/Icons/OtherIcons/rightArrow2.svg"
 import sellBookIcon from "../../static/Icons/AuthIcons/sellBookIcon.svg"
 import { v4 as uuidv4 } from 'uuid';
 import AWS from 'aws-sdk'
-require('dotenv').config();
+import dotenv from "dotenv"
+dotenv.config()
 
 export default {
     name: "SellBook",
