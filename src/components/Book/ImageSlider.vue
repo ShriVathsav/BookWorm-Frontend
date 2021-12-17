@@ -2,7 +2,7 @@
     <v-row justify="center" style="height: 100%">
         <v-dialog v-model="dialog" persistent scrollable >
             <template v-slot:activator="{ on, attrs }" class="ma-4">   
-                <img :src="images[0]" v-bind="attrs" v-on="on" class="book-image pa-1" /> 
+                <img :src="coverImage || emptyImage" @error="$event.target.src=emptyImage" v-bind="attrs" v-on="on" class="book-image pa-1" /> 
             </template>
             <v-card>
                 <v-card-title class="headline" >
@@ -13,13 +13,16 @@
                 </v-card-title>
                 
                 <v-card-text style="padding: 24px 14px 0px 14px;">
+                    <div v-if="!!images && images.length === 0">
+                        <InfoPageButton message="No Images Found" :icon="uploadImageIcon" />
+                    </div>
                     <div>
                         <v-expand-transition>
                             <v-sheet v-if="model != null" height="330" tile >
                                 <v-row class="fill-height" align="center" justify="center">
                                     <div style="height: 320px; width: 90%;
                                             display: flex; align-items: center; justify-content: center;">
-                                        <img :src="images[model]" style="height: 100%; max-width: 100%; border: 2px solid #9C27B0;
+                                        <img :src="images[model]" @error="$event.target.src=emptyImage" style="height: 100%; max-width: 100%; border: 2px solid #9C27B0;
                                             display: inline-block; margin: auto; text-align: center;" class="ma-2" />
                                     </div>
                                 </v-row>
@@ -31,7 +34,7 @@
                                     height="100" width="100" @click="toggle" >
                                     
                                         <v-scale-transition>
-                                            <img :src="image" style="height: 100%; width: 100%;" />
+                                            <img :src="image" @error="$event.target.src=emptyImage" style="height: 100%; width: 100%;" />
                                         </v-scale-transition>
                                     
                                 </v-card>
@@ -53,13 +56,13 @@
 
 <script>
 import uploadImageIcon from "../../static/Icons/SellBookIcons/upload-image.svg"
-
+import InfoPageButton from "../InfoPages/InfoPageButton"
 import emptyImage from "../../static/Images/emptyImage.png"
 
 export default {
     name: "ImageSlider",
-    components: {},
-    props: ["images"],
+    components: {InfoPageButton},
+    props: ["images", "coverImage"],
     data() {
         return {
             dialog: false,
@@ -70,7 +73,15 @@ export default {
         }
     },
     methods: {
-
+        invokeOnError(e){
+            console.log(e, "PRINTING ERROR")
+        }
+    },
+    created(){
+        console.log(this.coverImage, this.images, "COVERIMAGE")
+    },
+    updated(){
+        console.log(this.coverImage, this.images, "COVERIMAGE")
     }
 }
 </script>
@@ -102,6 +113,7 @@ export default {
     max-width: 470px;
     border: 2px solid #9C27B0;
 }
+
 
 /*ABOVE 990 PX*/
 @media only screen and (min-width: 990px){

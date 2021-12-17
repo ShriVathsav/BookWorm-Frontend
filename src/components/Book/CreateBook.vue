@@ -1,6 +1,7 @@
 <template>
     <div>
-        <SellBook :book="{}" :submitHandler="createBookHandler" :submitLoading="createBookLoading" mode="create" />
+        <SellBook :book="{}" :submitHandler="createBookHandler" :submitLoading="createBookLoading"
+            :createBookErrorMessage="errorMessage" mode="create" />
     </div>
 </template>
 
@@ -16,7 +17,10 @@ export default {
     props: [],
     data() {
         return {
-            createBookLoading: false
+            createBookLoading: false,
+            createSuccess: false,
+            errorMessage: "",
+            createBookError: false
         }
     },
     methods: {
@@ -29,9 +33,15 @@ export default {
             axios.post(`/book`, JSON.stringify(input)).then(res => {
                 console.log(res)
                 this.createBookLoading = false
+                this.createSuccess = true
+                this.createBookError = false
+                this.errorMessage = ""
             }).catch(err => {
                 this.createBookLoading = false
-                console.log(err)
+                this.editSuccess = false
+                this.editBookError = true
+                this.errorMessage = err.message || "An error occured"
+                console.log(err.response)
             })
         },  
     }

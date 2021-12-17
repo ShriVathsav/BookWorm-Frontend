@@ -1,7 +1,8 @@
 <template>
     <div>
-        <v-card class="mx-auto" max-width="374" style="cursor: pointer;" @click="$router.push(`/book/${book._id}`)" >
-            <v-img height="250" :src="coverImageUrl || noBookImagesIcon" style="border-bottom: 1px solid rgba(0, 0, 0, 0.12);" ></v-img>            
+        <v-card class="mx-auto" max-width="374" style="cursor: pointer;" @click="$router.push(`/book/${book._id}`)" id="book-card" >
+            <v-img height="250" :src="coverImageUrl || noBookImagesIcon" @error="invokeOnError()"
+                style="border-bottom: 1px solid rgba(0, 0, 0, 0.12);" ></v-img>            
             <v-card-title style="line-height: 1.4; font-size: 18px;">{{book.title}}</v-card-title>
             <v-card-text>
                 <v-row align="center" class="mx-0" >
@@ -50,8 +51,7 @@ import outOfStockIcon from "../../static/Icons/BookDisplayIcons/outOfStock.svg"
 import noBookImagesIcon from "../../static/Images/noBookImagesAlt.png"
 import moment from 'moment'
 import AWS from 'aws-sdk'
-import dotenv from "dotenv"
-dotenv.config()
+require("dotenv").config()
 
 export default {
     name: "BookCard",
@@ -78,6 +78,9 @@ export default {
     methods: {
         formatTime(deliveryTime){
             return moment(new Date()).add(deliveryTime,'d').format("Do MMM YYYY")
+        },
+        invokeOnError(){
+            this.coverImageUrl = this.noBookImagesIcon
         }
     },
     created(){
@@ -94,7 +97,9 @@ export default {
             this.myBucket.getSignedUrl('getObject', params, (err, url) => {
                 if (err) {
                     console.log(err)
+                    return
                 }
+                console.log(url)
                 this.coverImageUrl = url
             })
         }
@@ -109,6 +114,9 @@ export default {
 </script>
 
 <style scoped>
+#book-card{
+    width: 100%;
+}
 .book-property{
     display: flex;
     align-items: center;

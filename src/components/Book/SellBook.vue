@@ -175,7 +175,7 @@
                         </v-btn>
                     </v-card-actions>
                     <div style="padding: 14px; margin-top: 10px; background-color: #FF5252; color: white;" v-if="error">
-                        Please fill all the mandatory fields
+                        {{errorMessage}}
                     </div>
                     <v-btn x-large block color="purple" style="margin-top: 14px;" 
                         @click.native="getPreSignedUrl" >
@@ -213,13 +213,12 @@ import rightArrow from "../../static/Icons/OtherIcons/rightArrow2.svg"
 import sellBookIcon from "../../static/Icons/AuthIcons/sellBookIcon.svg"
 import { v4 as uuidv4 } from 'uuid';
 import AWS from 'aws-sdk'
-import dotenv from "dotenv"
-dotenv.config()
+require("dotenv").config()
 
 export default {
     name: "SellBook",
     components: {ImageUploader, UploadedImagesModal},
-    props: ["submitHandler", "book", "submitLoading", "mode"],
+    props: ["submitHandler", "book", "submitLoading", "mode", "editBookErrorMessage"],
     data() {
         return {
             s3Bucket: process.env.VUE_APP_BUCKET_NAME,
@@ -264,7 +263,8 @@ export default {
             categoriesList: ['School', 'Engineering', 'Competitive', 
                 'Arts & Science', 'Medicine', 'Children Stories'],
             bookTypeList: ['Hardcover', 'Paperback'],
-            error: false,
+            error: this.editBookErrorMessage ? true : false,
+            errorMessage: this.editBookErrorMessage || "",
             uploadedImages: [],
             inMemoryImages: [],
             deletedImages: [],
@@ -302,7 +302,10 @@ export default {
                     console.log(objectKey, res, "OBJECT KEY")
                     objectKeysArray.push(objectKey)
                 } catch(err){
+                    this.error = true
+                    this.errorMessage = "An error occured"
                     console.log(err, err.response)
+                    return
                 }
                 //let imagesList = this.uploadImageToS3()
             }
@@ -377,15 +380,17 @@ export default {
             const error = this.formValid()
             if(error){
                 this.error = true
+                this.errorMessage = "Please fill all the mandatory fields"
             } else {
                 this.error = false
+                this.errorMessage = ""
                 this.uploadImageToS3()
             }
         },
         prepareImagesList() {
             const uploadedImagesCopy = [...this.uploadedImages]
             this.deletedImages.map(image => {
-                const index = this.uploadedImagesCopy.indexOf(image);
+                const index = uploadedImagesCopy.indexOf(image);
                 if (index > -1) {
                     uploadedImagesCopy.splice(index, 1);
                 }
@@ -477,7 +482,7 @@ export default {
         }
     },
     created(){
-        console.log(process.env, process.env.VUE_APP_BUCKET_NAME, process.env.VUE_APP_BUCKET_REGION, "PRINTING CONFIG VARS HEROKU")
+        console.log(process.env)
     },
     updated() {
         console.log(this.inMemoryImages, this.imageBlobList, "SELL BOOK UPDATED")

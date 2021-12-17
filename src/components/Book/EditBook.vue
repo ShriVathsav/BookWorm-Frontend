@@ -4,7 +4,8 @@
             <FullPageLoader />
         </div>
         <div v-else >
-            <SellBook :book="book" :submitHandler="editBookHandler" :submitLoading="editBookLoading" mode="edit" />
+            <SellBook :book="book" :submitHandler="editBookHandler" :submitLoading="editBookLoading" 
+                :editBookErrorMessage="errorMessage" mode="edit" />
         </div>
     </div>
 </template>
@@ -14,6 +15,8 @@ import axios from "axios"
 import SellBook from "./SellBook"
 import FullPageLoader from "../UI/FullPageLoader"
 import Book from "../../models/Book"
+import AWS from 'aws-sdk'
+require("dotenv").config()
 
 export default {
     name: "EditBook",
@@ -21,11 +24,20 @@ export default {
     props: [],
     data() {
         return {
+            s3Bucket: process.env.VUE_APP_BUCKET_NAME,
+            region: process.env.VUE_APP_BUCKET_REGION,
+            myBucket: new AWS.S3({
+                params: { Bucket: this.s3Bucket},
+                signatureVersion: 'v4',
+                region: this.region
+            }),
             bookId: this.$route.params.id,
             book: {},
             loading: true,
             editBookLoading: false,
-            editSuccess: false
+            editSuccess: false,
+            errorMessage: "",
+            editBookError: false
         }
     },
     methods: {
@@ -40,12 +52,43 @@ export default {
             }).then(res => {
                 this.editBookLoading = false
                 console.log(res)
+                this.editSuccess = true
+                this.editBookError = false
+                this.errorMessage = ""
             }).catch(err => {
                 this.editBookLoading = false
+                this.editSuccess = false
+                this.editBookError = true
+                this.errorMessage = err.message || "An error occured"
                 console.log(err.response)
             })
         },
-        setBookState(book){
+        async getPresignedUrls(image){
+            //const s3 = new AWS.S3()
+            console.log(image, "PRINTING IMAGE FOR WHICH PRESIGNED URL IS GEN")
+            return new Promise((resolve,reject) => {
+                const myBucket = this.s3Bucket
+                const myKey = image
+                const signedUrlExpireSeconds = 60 * 5
+                const params = {
+                    Bucket: myBucket,
+                    Key: myKey,
+                    Expires: signedUrlExpireSeconds
+                }
+                this.myBucket.getSignedUrl('getObject', params, (err, url) => {
+                    if (err) reject(err);
+                    resolve(url);
+                });
+            })
+        },
+        async setBookState(book){
+            const imagesList = []
+            if(book.images){
+                for (let image of book.images) {
+                    const signedUrl = await this.getPresignedUrls(image)
+                    imagesList.push(signedUrl)
+                }   
+            }
             const newBook = new Book(                
                 book.title,
                 book.price,
@@ -63,9 +106,11 @@ export default {
                 book.condition,
                 book.publisher,
                 book.stocks_left,
-                book.delivery_date,
+                book.delivery_time,
                 book.country_of_origin,
                 book.language,
+                book.coverimage,
+                imagesList,
                 book.created_at,
                 book.updated_at,
                 book._id,
@@ -78,6 +123,8 @@ export default {
                 book.one_star
             )
             this.book = newBook
+            console.log(newBook, "PRINTING NEW BOOK VARIABLE")
+            this.loading = false
         },
     },
     created() {
@@ -87,11 +134,16 @@ export default {
                 }
         }).then(res => {
             console.log(res)
-            this.setBookState(res.data)            
-            this.loading = false
+            this.setBookState(res.data)
         }).catch(err => {
             this.loading = false
             console.log(err, err.response)
+        })
+    },
+    beforeCreate(){
+        AWS.config.update({
+            accessKeyId: process.env.VUE_APP_ACCESS_KEY,
+            secretAccessKey: process.env.VUE_APP_SECRET_ACCESS_KEY
         })
     }
 }

@@ -33,7 +33,7 @@
                 <v-card style="padding: 0px;">
                     <div class="main-content">
                         <div class="book-image-container">                    
-                            <div style="margin: 14px;"><ImageSlider :images="book.images" /></div>
+                            <div style="margin: 14px;"><ImageSlider :images="book.images" :coverImage="book.coverimage" /></div>
                         </div>
                         <div class="first-content">
                             <div class="make-bold" style="font-size: 18px; padding: 7px 14px;">
@@ -233,8 +233,7 @@ import addReviewIcon from "../../static/Icons/BookDisplayIcons/addReview.svg"
 import editBookIcon from "../../static/Icons/BookDisplayIcons/editBook.svg"
 import deleteBookIcon from "../../static/Icons/BookDisplayIcons/deleteBook2.svg"
 import AWS from 'aws-sdk'
-import dotenv from "dotenv"
-dotenv.config()
+require("dotenv").config()
 //import { API, graphqlOperation } from 'aws-amplify'
 //import {getBook as GetBook} from "../../graphql/queries"
 //const API_URL1 = "https://4j5jc4gcn7.execute-api.ap-south-1.amazonaws.com/dev"
@@ -352,16 +351,22 @@ export default {
                     Expires: signedUrlExpireSeconds
                 }
                 this.myBucket.getSignedUrl('getObject', params, (err, url) => {
-                    if (err) reject(err);
+                    if (err) {
+                        console.log(err, "ERROR GEN PRESIGNED URLS")
+                        reject(err)
+                    }
                     resolve(url);
                 });
             })
         },
         async setBookState(book){
             const imagesList = []
-            for (let image of book.images) {
-                const signedUrl = await this.getPresignedUrls(image)
-                imagesList.push(signedUrl)
+            if(book.images){
+                for (let image of book.images) {
+                    const signedUrl = await this.getPresignedUrls(image)
+                    console.log(signedUrl, "SIGNED URL BOOK DISPLAY")
+                    imagesList.push(signedUrl)
+                }   
             }
             const newBook = new Book(                
                 book.title,
