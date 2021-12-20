@@ -251,9 +251,9 @@ export default {
             s3Bucket: process.env.VUE_APP_BUCKET_NAME,
             region: process.env.VUE_APP_BUCKET_REGION,
             myBucket: new AWS.S3({
-                params: { Bucket: this.s3Bucket},
+                params: { Bucket: process.env.VUE_APP_BUCKET_NAME},
                 signatureVersion: 'v4',
-                region: this.region
+                region: process.env.VUE_APP_BUCKET_REGION
             }),
             emptyImage,
             bookId: this.$route.params.id,
