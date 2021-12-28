@@ -104,7 +104,7 @@ import deliveryTime from "../../static/Icons/ProfileIcons/OrderIcons/deliveryTim
 import orderedOn from "../../static/Icons/ProfileIcons/OrderIcons/orderedOnIcon.svg"
 
 import emptyImage from "../../static/Images/emptyImage.png"
-import BookCard from "../Book/BookCardAlias"
+import BookCard from "../Book/BookCard"
 import InfoPageButton from "../InfoPages/InfoPageButton"
 import Loader from "../UI/Loader"
 import moment from 'moment'
@@ -149,7 +149,6 @@ export default {
     },
     methods: {
         formatDate(date){
-            console.log(date)
             return moment(new Date(date)).format("Do MMM YYYY")
         },
         getOrderStatus(status){
@@ -161,8 +160,7 @@ export default {
                 return deliveredStatus
             }
         },
-        valueChanged(filterValues) {
-            console.log(filterValues, "CHIP VALUE CHANGHED")
+        valueChanged() {
             this.loading = true
             this.getOrders()
         },

@@ -26,14 +26,16 @@
                             <v-img class="button-icon" :src="editBookIcon" ></v-img>
                             <div>EDIT</div>
                         </v-btn>
-                        <div><UpdateBookStatus :book="book" /></div>
+                        <div><UpdateBookStatus :book="book" :alterState="alterState" /></div>
                     </div>
                 </v-card>
 
                 <v-card style="padding: 0px;">
                     <div class="main-content">
                         <div class="book-image-container">                    
-                            <div style="margin: 14px;"><ImageSlider :images="book.images" :coverImage="book.coverimage" /></div>
+                            <div style="margin: 14px;">
+                                <ImageSlider :images="book.images" :coverImage="book.coverimage" />
+                            </div>
                         </div>
                         <div class="first-content">
                             <div class="make-bold" style="font-size: 18px; padding: 7px 14px;">
@@ -157,12 +159,12 @@
                             </div>                    
                         </div>
 
-                        <div style="display: flex; justify-content: center;" >
+                        <!--div style="display: flex; justify-content: center;" >
                             <v-btn outlined color="cyan" @click.native="$router.push('/')" id="info-button">
                                 <v-img class="button-icon" :src="reviewIcon" ></v-img>
                                 <div>SEE ALL REVIEWS</div>
                             </v-btn>
-                        </div>
+                        </div-->
                     </v-card>
                 </div>
                 <v-card style="padding: 14px; margin: 14px 0px;">
@@ -388,6 +390,7 @@ export default {
                 book.language,
                 imagesList[0],
                 imagesList,
+                book.status,
                 book.created_at,
                 book.updated_at,
                 book._id,

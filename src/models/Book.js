@@ -22,6 +22,7 @@ class Book {
         language,
         coverImage,
         images,
+        status,
         createdAt,
         updatedAt,
         id,
@@ -58,6 +59,7 @@ class Book {
         this.language = language
         this.coverImage = coverImage
         this.images = images
+        this.status = status
         this.createdAt = createdAt
         this.updatedAt = updatedAt
         this.profile = profile

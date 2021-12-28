@@ -1,17 +1,26 @@
 <template>
     <div><!--style="position: fixed; z-index: 200; top: 0; left: 0; bottom: 0; right: 0;"-->
         <!--v-app-bar-nav-icon @click.stop="$store.dispatch('view/toggleSideDrawer', true)"></v-app-bar-nav-icon-->
-        <v-navigation-drawer v-model="drawer" absolute temporary width="270" >
-            <v-list v-if="isLoggedIn()" >
+        <v-navigation-drawer v-model="drawer" fixed temporary width="270" >
+            <v-list>
                 <v-list-item>
+                    <div class="d-flex align-center justify-center flex-dir-col" style="width: 100%" >
+                        <img :src="headerIcon" style="height: 60px; width: 60px;" class="ma-4" />
+                        <div style="font-weight: bold; font-size: 30px;" class="mb-2" >Book Worm</div>
+                    </div>
+                </v-list-item>
+            </v-list>
+            <v-divider></v-divider>
+            <v-list v-if="isLoggedIn()" >
+                <!--v-list-item>
                     <v-list-item-avatar>
                         <v-img src="https://cdn.vuetifyjs.com/images/john.png"></v-img>
                     </v-list-item-avatar>
-                </v-list-item>
+                </v-list-item-->
 
-                <v-list-item link>
+                <v-list-item>
                     <v-list-item-content>
-                        <v-list-item-title class="title">
+                        <v-list-item-title class="title mb-2">
                             {{$store.getters['auth/getUserProfile'] && $store.getters['auth/getUserProfile'].username}}
                         </v-list-item-title>
                         <v-list-item-subtitle>
@@ -19,9 +28,14 @@
                         </v-list-item-subtitle>
                     </v-list-item-content>
 
-                    <v-list-item-action>
+                    <!--v-list-item-action>
                         <v-icon>mdi-menu-down</v-icon>
-                    </v-list-item-action>
+                    </v-list-item-action-->
+                </v-list-item>
+            </v-list>
+            <v-list v-else >
+                <v-list-item>
+                    <div style="font-size: 18px;" ><strong>You are not logged in</strong></div>
                 </v-list-item>
             </v-list>
 
@@ -130,7 +144,7 @@ export default {
         handleClick(route){
             this.$router.push(route)
         },
-        async isLoggedIn(){
+        isLoggedIn(){
             /*const user = await Auth.currentAuthenticatedUser()
             if(user){
                 return true

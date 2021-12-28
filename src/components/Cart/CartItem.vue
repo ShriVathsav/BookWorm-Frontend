@@ -49,7 +49,7 @@ import cart2Icon from "../../static/Icons/BookDisplayIcons/cart2.svg"
 
 import emptyImage from "../../static/Images/emptyImage.png"
 
-import BookCard from "../Book/BookCard"
+import BookCard from "../Book/BookCardForCart"
 //import axios from "axios"
 
 export default {
@@ -154,7 +154,7 @@ export default {
     height: 150px;
 }
 .book-card-outer{
-    padding: 14px 14px 14px 0px;
+    padding: 14px;
 }
 #info-button{
     display: flex;

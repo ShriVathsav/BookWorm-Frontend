@@ -78,7 +78,7 @@ export default {
             allowWholeNumbers(e)            
         },
         validateAndSubmit(){
-            if(!!this.quantity && !!this.deliveryTime && this.deliveryTime == 0 && this.quantity == 0){
+            if(!!this.quantity && !!this.deliveryTime && this.deliveryTime != 0 && this.quantity != 0){
                 this.bookQuantityError = false
                 this.errorMessage = ""
                 this.updateBookQuantity()
@@ -90,8 +90,8 @@ export default {
         updateBookQuantity(){
             this.updateBookQuantityLoading = true
             const params = {
-                quantity: this.quantity,
-                delivery_time: this.deliveryTime
+                stocks_left: Number(this.quantity),
+                delivery_time: Number(this.deliveryTime)
             }
             axios.put(`/book/${this.$route.params.id}/editQuantity`, params,
             {
@@ -101,8 +101,8 @@ export default {
             }).then(res => {
                 console.log(res)
                 const book = {...this.book}
-                book.stocksLeft = res.data.stocksleft
-                book.deliveryTime = res.data.delivery_time
+                book.stocksLeft = params.stocks_left
+                book.deliveryTime = params.delivery_time
                 this.alterState("book", book)
                 this.updateBookQuantityLoading = false
                 this.dialog = false

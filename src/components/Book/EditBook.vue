@@ -6,7 +6,7 @@
         <div v-else >
             <div v-if="!editSuccess" >
                 <SellBook :book="book" :submitHandler="editBookHandler" :submitLoading="editBookLoading" 
-                    :editBookErrorMessage="errorMessage" mode="edit" />
+                    :editBookErrorMessage="errorMessage" mode="edit" :displayImages="displayImages" />
             </div>
             <div v-else >
                 <InfoPage :icon="postSuccessIcon" message="Your book has been edited successfully!"
@@ -50,7 +50,8 @@ export default {
             editBookLoading: false,
             editSuccess: false,
             errorMessage: "",
-            editBookError: false
+            editBookError: false,
+            displayImages: []
         }
     },
     methods: {
@@ -117,7 +118,8 @@ export default {
                 book.country_of_origin,
                 book.language,
                 book.coverimage,
-                imagesList,
+                book.images,
+                book.status,
                 book.created_at,
                 book.updated_at,
                 book._id,
@@ -129,6 +131,7 @@ export default {
                 book.two_star,
                 book.one_star
             )
+            this.displayImages = imagesList
             this.book = newBook
             this.loading = false
         },

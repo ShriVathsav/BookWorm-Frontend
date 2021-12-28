@@ -157,9 +157,9 @@
                     <div style="font-weight: 700; text-align: center;" class="mb-3">Image Upload</div>
                     <div class="font-weight-bold" style="font-size: 14px;" >Upload Images</div>
                     <UploadedImagesModal :inMemoryImages="inMemoryImages" :uploadedImages="uploadedImages"
-                        :deleteBookImage="deleteBookImage" />
+                        :deleteBookImage="deleteBookImage" :displayImagesList="displayImagesList" />
                     <div style="font-size: 12px; color: gray;" class="mb-6" >
-                        {{uploadedImages.length + inMemoryImages.length}} photos uploaded
+                        {{displayImagesList.length + inMemoryImages.length}} photos uploaded
                     </div>                    
                     <ImageUploader :inMemoryImages="inMemoryImages" :imageBlobList="imageBlobList" 
                         :alterState="alterState" />
@@ -209,7 +209,7 @@ require("dotenv").config()
 export default {
     name: "SellBook",
     components: {ImageUploader, UploadedImagesModal},
-    props: ["submitHandler", "book", "submitLoading", "mode", "editBookErrorMessage"],
+    props: ["submitHandler", "book", "submitLoading", "mode", "editBookErrorMessage", "displayImages"],
     data() {
         return {
             s3Bucket: process.env.VUE_APP_BUCKET_NAME,
@@ -256,11 +256,11 @@ export default {
             bookTypeList: ['Hardcover', 'Paperback'],
             error: this.editBookErrorMessage ? true : false,
             errorMessage: this.editBookErrorMessage || "",
-            uploadedImages: [],
+            uploadedImages: this.book.images || [],
             inMemoryImages: [],
             deletedImages: [],
             imageBlobList: [],
-            finalImagesList: []
+            displayImagesList: this.displayImages || []
         }
     },
     methods: {
@@ -321,6 +321,7 @@ export default {
         deleteBookImage(index, list){
             if(list === "uploadedImages"){
                 this.deletedImages.push(this.uploadedImages[index])
+                this.displayImagesList.splice(index, 1)
                 this.uploadedImages.splice(index, 1)
             } else if(list === "inMemoryImages"){
                 this.inMemoryImages.splice(index, 1)
@@ -391,7 +392,7 @@ export default {
                 year: this.year,
                 weight: Number(this.weight),
                 stocks_left: Number(this.stocksLeft),
-                delivery_time: this.deliveryTime,
+                delivery_time: Number(this.deliveryTime),
                 images: imagesList,
                 coverImage: imagesList[0]
             }
@@ -446,8 +447,8 @@ export default {
             this.bookType = this.bookTypeList[1]
             this.year = 2022
             this.weight = 466.7
-            this.stocksLeft = 1
-            this.deliveryTime = 7
+            this.stocksLeft = 10
+            this.deliveryTime = 4
             this.step = "4"
         }
     },

@@ -13,17 +13,17 @@
                 <v-card-title class="headline" >
                     <div style="display: flex; align-items: center; justify-content: center;">
                         <v-img :src="uploadImageIcon" class="button-icon" ></v-img>
-                        <div>View Images ({{uploadedImages.length + inMemoryImages.length}})</div>
+                        <div>View Images ({{displayImagesList.length + inMemoryImages.length}})</div>
                     </div>
                 </v-card-title>
                 
                 <v-card-text style="padding: 14px 24px;">
                     <div>
-                        <div v-if="uploadedImages.length === 0 && inMemoryImages.length === 0">
+                        <div v-if="displayImagesList.length === 0 && inMemoryImages.length === 0">
                             <InfoPageButton message="No Images Uploaded" :icon="uploadImageIcon" />
                         </div>
                         <div v-else id="image-container-wrapper" >
-                            <div v-for="(images, index) in uploadedImages" :key="images" >
+                            <div v-for="(images, index) in displayImagesList" :key="images" >
                                 <div class="image-container" >
                                     <img :src="images" style="height: 130px; width: 130px;" />
                                     <img :src="deleteBookImageIcon" @click="deleteBookImage(index, 'uploadedImages')"
@@ -61,13 +61,16 @@ import InfoPageButton from "../InfoPages/InfoPageButton"
 export default {
     name: "UploadedImagesModal",
     components: {InfoPageButton},
-    props: ["uploadedImages", "inMemoryImages", "deleteBookImage"],
+    props: ["uploadedImages", "inMemoryImages", "deleteBookImage", "displayImagesList"],
     data() {
         return {
             dialog: false,
             uploadImageIcon,
             deleteBookImageIcon,
         }
+    },
+    created(){
+        console.log(this.uploadedImages, this.inMemoryImages)
     },
     methods: {
 

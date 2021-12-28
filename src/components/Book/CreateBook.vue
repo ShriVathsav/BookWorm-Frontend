@@ -39,7 +39,6 @@ export default {
             input.in_stock = true
             input.status = "ACTIVE"
             this.createBookLoading = true
-            console.log(input)
             axios.post(`/book`, JSON.stringify(input)).then(res => {
                 console.log(res)
                 this.createBookLoading = false

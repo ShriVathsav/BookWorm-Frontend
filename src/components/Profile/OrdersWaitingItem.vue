@@ -95,7 +95,7 @@ import deliveryTime from "../../static/Icons/ProfileIcons/OrderIcons/deliveryTim
 import orderedOn from "../../static/Icons/ProfileIcons/OrderIcons/orderedOnIcon.svg"
 
 import emptyImage from "../../static/Images/emptyImage.png"
-import BookCard from "../Book/BookCardAlias"
+import BookCard from "../Book/BookCard"
 import DeliveryDetails from "./DeliveryDetails"
 import moment from 'moment'
 

@@ -35,7 +35,9 @@ export const cart = {
             if(quantity >= maxStocks){
                 return
             }
-            state[index].quantity += 1
+            const finalQuantity = state[index].quantity + 1
+            state[index].quantity = finalQuantity
+            state[index].totalAmount = state[index].book.sellingPrice * finalQuantity
             //const cartItem = [...state]
             //cartItem[index].quantity += 1
             //state = cartItem
@@ -46,7 +48,9 @@ export const cart = {
                 state.splice(index, 1)
                 return
             }
-            state[index].quantity -= 1
+            const finalQuantity = state[index].quantity - 1
+            state[index].quantity = finalQuantity
+            state[index].totalAmount = state[index].book.sellingPrice * finalQuantity
         },
         deleteItem(state, index) {
             state.splice(index, 1)

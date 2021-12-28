@@ -25,3 +25,6 @@ a:visited {
 .justify-center {
     justify-content: center;
 }
+.flex-dir-col {
+    flex-direction: column;
+}

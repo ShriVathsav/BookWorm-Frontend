@@ -146,10 +146,8 @@ export default {
         makePayment(token) {
             const ordersArray = []
             for (let cartItem of this.$store.state.cart){
-                console.log(cartItem.book.deliveryTime)
                 var result = new Date();
                 result.setDate(result.getDate() + cartItem.book.deliveryTime)
-                console.log(result)
                 ordersArray.push(new Order(
                     result.toISOString(),
                     cartItem.book.profile,
@@ -167,7 +165,6 @@ export default {
                     new Date().toISOString()
                 ))
             }
-            console.log(ordersArray)
         
             let payment = {
                 stripe_token: token,

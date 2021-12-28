@@ -73,7 +73,7 @@
 
                         <v-divider vertical></v-divider>
 
-                        <div class="tab-item" @click="profileBooks = '2'" v-if="true"
+                        <div class="tab-item" @click="profileBooks = '2'" v-if="isCurrentUser"
                             :style="`background-color: ${profileBooks === '2' ? '#9C27B0' : ''}; color: ${profileBooks === '2' ? 'white' : ''};`" >
                             <img :src="yourOrders2" max-width="50" max-height="50" class="tab-image" />
                             <div class="tab-text">YOUR ORDERS</div>
@@ -81,7 +81,7 @@
 
                         <v-divider vertical></v-divider>
 
-                        <div class="tab-item" @click="profileBooks = '3'" v-if="true"
+                        <div class="tab-item" @click="profileBooks = '3'" v-if="isCurrentUser"
                             :style="`background-color: ${profileBooks === '3' ? '#9C27B0' : ''}; color: ${profileBooks === '3' ? 'white' : ''};`" >
                             <img :src="ordersWaiting" max-width="50" max-height="50" class="tab-image" />
                             <div class="tab-text">ORDERS WAITING</div>
@@ -199,7 +199,6 @@ export default {
             this.profile = new Profile(res.data._id, res.data.cognito_id, res.data.username, res.data.email, 
                     res.data.password, res.data.profile_image, res.data.phone, res.data.address1, res.data.address2, 
                     res.data.pincode, res.data.created_at, res.data.updated_at)
-            console.log(this.profile)
             this.loading = false
         }).catch(err => {
             console.log(err, err.response)

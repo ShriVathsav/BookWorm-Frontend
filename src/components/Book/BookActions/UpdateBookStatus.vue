@@ -31,11 +31,11 @@
                 
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="red darken-1" text @click="dialog = false" >
+                    <v-btn color="red darken-1" text @click="dialog = false" :disabled="updateBookStatusLoading" >
                         CLOSE
                     </v-btn>
-                    <v-btn color="purple" text @click="updateBookStatus" >
-                        DEACTIVATE
+                    <v-btn color="purple" text @click="updateBookStatus" :loading="updateBookStatusLoading" >
+                        {{book.status === "INACTIVE" ? "REACTIVATE" : "DEACTIVATE"}}
                     </v-btn>
                 </v-card-actions>
             </v-card>
@@ -50,7 +50,7 @@ import axios from "axios"
 export default {
     name: "UpdateBookStatus",
     components: {},
-    props: ["book"],
+    props: ["book", "alterState"],
     data() {
         return {
             dialog: false,
@@ -68,6 +68,7 @@ export default {
             const params = {
                 status: this.book.status === "ACTIVE" ? "INACTIVE" : "ACTIVE"
             }
+            console.log(this.book, params)
             axios.put(`/book/${this.$route.params.id}/editStatus`, params,
             {
                 headers: {
@@ -76,7 +77,7 @@ export default {
             }).then(res => {
                 console.log(res)
                 const book = {...this.book}
-                book.status = res.data.status
+                book.status = params.status
                 this.alterState("book", book)
                 this.updateBookStatusLoading = false
                 this.dialog = false
