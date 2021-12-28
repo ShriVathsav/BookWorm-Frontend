@@ -155,7 +155,7 @@ export default {
             const params = {
                 email: this.email,
                 username: this.username,
-                cognitoid: cognitoId,
+                cognito_id: cognitoId,
                 password: this.password,
                 phone: this.contactNumber,
                 address1: this.addressLine1,

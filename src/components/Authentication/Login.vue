@@ -106,7 +106,7 @@ export default {
                 }
             }).then(res => {
                 console.log(res)
-                const profile = new Profile(res.data._id, res.data.cognitoid, res.data.username, res.data.email, 
+                const profile = new Profile(res.data._id, res.data.cognito_id, res.data.username, res.data.email, 
                     res.data.password, res.data.profile_image, res.data.phone, res.data.address1, res.data.address2, 
                     res.data.pincode, res.data.created_at, res.data.updated_at)
                 this.$store.dispatch("auth/setUserProfile", profile)

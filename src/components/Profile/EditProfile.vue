@@ -171,7 +171,7 @@ export default {
             axios.put(`/profile/${this.$route.params.id}`, JSON.stringify(params)).then(res => {
                 console.log(res)
                 const profile = {...this.profile}
-                const modifiedProfile = new Profile(profile._id, profile.cognitoid, params.username, profile.email, 
+                const modifiedProfile = new Profile(profile._id, profile.cognito_id, params.username, profile.email, 
                     profile.password, profile.profile_image, params.phone, params.address1, params.address2, 
                     params.pincode, profile.created_at, params.updated_at)
                 this.alterState("profile", modifiedProfile)
