@@ -2,7 +2,7 @@
     <div><!--style="position: fixed; z-index: 200; top: 0; left: 0; bottom: 0; right: 0;"-->
         <!--v-app-bar-nav-icon @click.stop="$store.dispatch('view/toggleSideDrawer', true)"></v-app-bar-nav-icon-->
         <v-navigation-drawer v-model="drawer" absolute temporary width="270" >
-            <v-list>
+            <v-list v-if="isLoggedIn()" >
                 <v-list-item>
                     <v-list-item-avatar>
                         <v-img src="https://cdn.vuetifyjs.com/images/john.png"></v-img>
@@ -12,9 +12,11 @@
                 <v-list-item link>
                     <v-list-item-content>
                         <v-list-item-title class="title">
-                            John Leider
+                            {{$store.getters['auth/getUserProfile'] && $store.getters['auth/getUserProfile'].username}}
                         </v-list-item-title>
-                        <v-list-item-subtitle>john@vuetifyjs.com</v-list-item-subtitle>
+                        <v-list-item-subtitle>
+                            {{$store.getters['auth/getUserProfile'] && $store.getters['auth/getUserProfile'].email}}
+                        </v-list-item-subtitle>
                     </v-list-item-content>
 
                     <v-list-item-action>
@@ -27,37 +29,41 @@
 
             <v-list nav>
                 <v-list-item-group active-class="deep-purple--text text--accent-4" >
-                    <v-list-item @click="handleClick('/')">
+                    <v-list-item @click="handleClick('/')" v-if="isLoggedIn()" >
                         <img :src="dashboardIcon" style="width: 30px; height: 30px;" class="mr-5" />
                         <v-list-item-title style="font-size: 15px;">Dashboard</v-list-item-title>
                     </v-list-item>
 
-                    <v-list-item @click="handleClick('/sellbook')">
+                    <v-list-item @click="handleClick('/sellbook')" v-if="isLoggedIn()" >
                         <img :src="sellBookIcon" style="width: 30px; height: 30px;" class="mr-5" />
                         <v-list-item-title style="font-size: 15px;">Post Book for Sale</v-list-item-title>
                     </v-list-item>
 
-                    <v-list-item @click="handleClick('/profile/6056398392d4647c1bc056f7')">
+                    <v-list-item 
+                    @click="handleClick(`/profile/${$store.getters['auth/getUserProfile'] ? $store.getters['auth/getUserProfile'].id : ''}`)"
+                            v-if="isLoggedIn()">
                         <img :src="viewProfile" style="width: 30px; height: 30px;" class="mr-5" />
                         <v-list-item-title style="font-size: 15px;">My Profile</v-list-item-title>
                     </v-list-item>
 
-                    <v-list-item @click="handleClick(`/profile/6056398392d4647c1bc056f7/cart`)">
+                    <v-list-item 
+                    @click="handleClick(`/profile/${$store.getters['auth/getUserProfile'] ? $store.getters['auth/getUserProfile'].id : ''}/cart`)"
+                            v-if="isLoggedIn()">
                         <img :src="cart1Icon" style="width: 30px; height: 30px;" class="mr-5" />
                         <v-list-item-title style="font-size: 15px;">Cart</v-list-item-title>
                     </v-list-item>
 
-                    <v-list-item>
+                    <v-list-item v-if="isLoggedIn()" @click="signOut()" >
                         <img :src="signOut1" style="width: 30px; height: 30px;" class="mr-5" />
                         <v-list-item-title style="font-size: 15px;">Sign Out</v-list-item-title>
                     </v-list-item>
 
-                    <v-list-item @click="handleClick('/signin')">
+                    <v-list-item @click="handleClick('/signin')" v-if="!isLoggedIn()" >
                         <img :src="loginIcon" style="width: 30px; height: 30px;" class="mr-5" />
                         <v-list-item-title style="font-size: 15px;">Login</v-list-item-title>
                     </v-list-item>
 
-                    <v-list-item @click="handleClick('/signup')">
+                    <v-list-item @click="handleClick('/signup')" v-if="!isLoggedIn()">
                         <img :src="registerIcon" style="width: 30px; height: 30px;" class="mr-5" />
                         <v-list-item-title style="font-size: 15px;">Register</v-list-item-title>
                     </v-list-item>
@@ -82,8 +88,10 @@ import registerIcon from "../../static/Icons/AuthIcons/registerIcon.svg"
 import hamburgerMenu1 from "../../static/Icons/AuthIcons/hamburgerMenu1.svg"
 import hamburgerMenu2 from "../../static/Icons/AuthIcons/hamburgerMenu2.svg"
 
+import {Auth} from 'aws-amplify'
+
 export default {
-    name: "Header",
+    name: "SideDrawer",
     components: {},
     props: [],
     data() {
@@ -110,6 +118,7 @@ export default {
             ],
             //drawer: false,
             group: null,
+            loggedIn: false
         }
     },
     watch: {
@@ -120,18 +129,38 @@ export default {
     methods: {
         handleClick(route){
             this.$router.push(route)
+        },
+        async isLoggedIn(){
+            /*const user = await Auth.currentAuthenticatedUser()
+            if(user){
+                return true
+            }
+            return false*/
+            return this.$store.state.auth.loggedIn
+        },
+        async signOut(){
+            try{
+                await Auth.signOut()
+                this.$store.dispatch("auth/logout")
+                localStorage.removeItem("bookStoreUser")
+                this.$router.push("/signin")
+            } catch(err){
+                console.error(err.message)
+            }
         }
+    },
+    updated(){
+        console.log(this.$store.state)
     },
     computed: {
         drawer: {
             get () {
-                console.log(this.$store.state)
                 return this.$store.state.view.sideDrawerOpen
             },
             set (value) {
                 this.$store.dispatch('view/toggleSideDrawer', value)
             }
-        }
+        },
     }
 }
 </script>

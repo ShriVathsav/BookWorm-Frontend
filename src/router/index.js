@@ -13,8 +13,6 @@ import ForgotPassword from "@/components/Authentication/ForgotPassword"
 import NewPassword from "@/components/Authentication/NewPassword"
 import NotFound from "@/components/InfoPages/Error404Page"
 
-import store from "../store"
-
 Vue.use(Router)
 
 const router = new Router({
@@ -38,9 +36,8 @@ const router = new Router({
 //console.log(router.app.$store.getters['auth/isAuthenticated'], "PRINTING ROUTER")
 
 router.beforeEach((to, from, next) => {
-    console.log(from, router.app.$store.getters['auth/isAuthenticated'], "PRINTING FROM IN GUARDS")
+    //console.log(from, router.app.$store.getters['auth/isAuthenticated'], "PRINTING FROM IN GUARDS")
     if(to.meta.requireAuth){
-        console.log(store, store.state.auth.loggedIn)
         if(localStorage.getItem('bookStoreUser')){
             next()
         } else{

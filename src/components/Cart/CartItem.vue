@@ -81,7 +81,6 @@ export default {
     },
     methods: {
         increaseQuantity(){
-            console.log(this.cartItem.book.stocksLeft)
             this.$store.dispatch("cart/increaseItemQuantity", {index: this.index, maxStocks: this.cartItem.book.stocksLeft})
         },
         decreaseQuantity(){
@@ -90,19 +89,6 @@ export default {
             }
         }
     },
-    updated(){
-        console.log(this.$store.state.cart, "CART UPDATED")
-    },
-    created(){
-        console.log(this.$store.state.cart, "CART", this.cartItem.book.stocksLeft)
-        /*
-        axios.get("http://localhost:8080/books").then(res => {
-            console.log(res)
-            this.books = res.data
-        }).catch(err => {
-            console.log(err.response)
-        })*/
-    }
 }
 </script>
 

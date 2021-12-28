@@ -39,15 +39,12 @@ export default {
     },
     methods: {
         sendingEvent (file, xhr, formData) {
-            console.log(this.dropzoneOptions)
-            console.log(file, xhr, formData)
             formData.append('paramName', file);
             for (var pair of formData.entries()) {
                 console.log(pair[0]+ ', ' + pair[1]); 
             }
         },
         wholeNumberInputChange(){
-            console.log("from image uploader", "IS NUMBER RESULT")
             this.hello = !this.hello
         },
         readURL(files) {
@@ -59,7 +56,6 @@ export default {
                 reader.onload = function (e, that1=that) {
                     var img = new Image;
                     img.onload = function(e, that2=that1) {
-                        console.log("The dimensions of the image is " + img.width + "px. "+ img.height + "px.")
                         //that2.imageHeight = img.height
                         that2.imageWidth = img.width
                         that2.uploadSuccess = 1
@@ -84,9 +80,6 @@ export default {
                 <div class="color: #314b5f;">...or click to select a file from your computer</div>
             </div>
         `
-    },
-    updated(){
-        console.log(this.dropzoneOptions)
     },
     mounted(){
         console.log(document.getElementById("hello"))

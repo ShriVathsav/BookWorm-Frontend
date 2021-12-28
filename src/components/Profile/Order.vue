@@ -1,5 +1,15 @@
 <template>
     <div>
+        <div class="font-weight-bold d-flex justify-center align-center flex-column" >
+            <div style="font-size: 14px;">FILTER BY ORDER STATUS</div>
+            <v-chip-group v-model="orderFilters" @change="valueChanged"
+                    column multiple active-class="cyan white--text text--accent-4" >
+                <v-chip filter :disabled="loading" v-for="orderStatus in orderStatusList"
+                        :key="orderStatus" :value="orderStatus" >
+                    {{orderStatus}}
+                </v-chip>
+            </v-chip-group>
+        </div>
         <div v-if="loading">
             <Loader />
         </div>
@@ -8,16 +18,6 @@
                 <InfoPageButton :icon="yourOrdersInfo" message="It seems you have not bought any books" />
             </div>
             <div style="" v-else >
-                <div class="font-weight-bold d-flex justify-center align-center flex-column" >
-                    <div style="font-size: 14px;">FILTER BY ORDER STATUS</div>
-                    <v-chip-group v-model="orderFilters" @change="valueChanged"
-                            column multiple active-class="cyan white--text text--accent-4" >
-                        <v-chip filter :disabled="filterLoading" v-for="orderStatus in orderStatusList"
-                                :key="orderStatus" :value="orderStatus" >
-                            {{orderStatus}}
-                        </v-chip>
-                    </v-chip-group>
-                </div>
                 <div class="font-weight-bold my-4" style="text-align: center; font-size: 20px;">
                     {{orders.length}} items ordered by you
                 </div>
@@ -34,14 +34,14 @@
                                         <img :src="orderedOn" style="width: 35px; height: 35px; margin-bottom: 6px;" />
                                         <div class="font-weight-bold" style="margin-bottom: 3px; font-size: 15px;">Ordered On</div>                                
                                     </div>
-                                    <div>{{order.created_at}}</div>
+                                    <div>{{formatDate(order.created_at)}}</div>
                                 </div>
                                 <div class="cart-metadata">
                                     <div class="cart-metadata-2">
                                         <img :src="deliveryTime" style="width: 35px; height: 35px; margin-bottom: 6px;" />
                                         <div class="font-weight-bold" style="margin-bottom: 3px; font-size: 15px;">Delivery On</div>                                
                                     </div>
-                                    <div>{{order.deliverydate}}</div>
+                                    <div>{{formatDate(order.delivery_date)}}</div>
                                 </div>
                             </div>
                             <div style="display: flex; align-items: center; justify-content: center; width: 100%;">
@@ -66,6 +66,12 @@
                                     <v-img class="button-icon" :src="getOrderStatus(order.status)" ></v-img>
                                     <div class="make-bold">{{order.status}}</div>
                                 </v-chip>
+                            </div>
+                            <div style="display: flex; justify-content: center;" class="pt-4 pb-6"
+                                    v-if="order.status === 'DELIVERED'" >
+                                <div class="my-3">
+                                    <CreateReview :book="order.book" />
+                                </div>
                             </div>
                         </v-card>
                     </div>
@@ -98,17 +104,17 @@ import deliveryTime from "../../static/Icons/ProfileIcons/OrderIcons/deliveryTim
 import orderedOn from "../../static/Icons/ProfileIcons/OrderIcons/orderedOnIcon.svg"
 
 import emptyImage from "../../static/Images/emptyImage.png"
-import BookCard from "../Book/BookCard"
+import BookCard from "../Book/BookCardAlias"
 import InfoPageButton from "../InfoPages/InfoPageButton"
 import Loader from "../UI/Loader"
+import moment from 'moment'
 
 import axios from "axios"
-const API_URL1 = "https://4j5jc4gcn7.execute-api.ap-south-1.amazonaws.com/dev"
-//const API_URL2 = "http://localhost:8080"
+import CreateReview from "../Book/Review/CreateReview"
 
 export default {
     name: "Order",
-    components: {BookCard, InfoPageButton, Loader},
+    components: {BookCard, InfoPageButton, Loader, CreateReview},
     //props: ["orders"],
     data() {
         return {
@@ -134,32 +140,34 @@ export default {
             orderedOn,
 
             emptyImage,            
-            orderFilters: ["IN PROGRESS", "IN TRANSIT", "COLLECTED", "DELIVERED"],
+            orderFilters: ["IN PROGRESS", "IN TRANSIT", "DELIVERED"],
             filterLoading: false,
             orders: [],
             loading: false,
-            orderStatusList: ["IN PROGRESS", "IN TRANSIT", "COLLECTED", "DELIVERED"],
+            orderStatusList: ["IN PROGRESS", "IN TRANSIT", "DELIVERED"],
         }
     },
     methods: {
+        formatDate(date){
+            console.log(date)
+            return moment(new Date(date)).format("Do MMM YYYY")
+        },
         getOrderStatus(status){
             if(status === "IN PROGRESS"){
                 return inProgressStatus
             } else if(status === "IN TRANSIT"){
                 return inTransitStatus
-            } else if(status === "COLLECTED"){
-                return collectedStatus
             } else if(status === "DELIVERED"){
                 return deliveredStatus
             }
         },
         valueChanged(filterValues) {
             console.log(filterValues, "CHIP VALUE CHANGHED")
-            this.filterLoading = true
+            this.loading = true
             this.getOrders()
         },
         getOrders() {
-            axios.get(`${API_URL1}/order/getAllByProfile/${this.$route.params.id}`,
+            axios.get(`/order/getAllByProfile/${this.$route.params.id}`,
                 { params: { 
                     statusValues: this.orderFilters.length === 0 ? this.orderStatusList.toString() : this.orderFilters.toString(),
                 }}
@@ -245,6 +253,7 @@ export default {
 }
 .book-card-outer{
     padding: 14px 14px 14px 0px;
+    width: 100%;
 }
 #info-button{
     display: flex;

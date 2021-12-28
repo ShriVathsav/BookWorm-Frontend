@@ -21,22 +21,22 @@
                     <div style="display: flex; flex-flow: row wrap;">
                         <div class="detail-item pa-3" style="width: 62%;">
                             <div class="font-weight-bold delivery-title" >Name of the Buyer</div>
-                            <div>name</div>
+                            <div>{{order.buyername}}</div>
                         </div>
                         <div class="detail-item pa-3" style="width: 38%;">
-                            <router-link :to="`/profile/2`" >View Profile</router-link>
+                            <router-link :to="`/profile/${order.buyer}`" >View Profile</router-link>
                         </div>
                         <div class="detail-item pa-3">
                             <div class="font-weight-bold delivery-title" >Email</div>
-                            <div>email@email.com</div>
+                            <div>{{order.buyeremail}}</div>
                         </div>
                         <div class="detail-item pa-3">
                             <div class="font-weight-bold delivery-title" >Contact Number</div>
-                            <div>9889776878</div>
+                            <div>{{order.phone}}</div>
                         </div>
                         <div style="width: 100%;" class="pa-3">
                             <div class="font-weight-bold delivery-title" >Address</div>
-                            <div>1, Street name, Locality, Door No, Area, City, Pincode</div>
+                            <div>{{order.address1 + ", " + order.address2}}</div>
                         </div>
                     </div>
                 </v-card-text>
@@ -70,6 +70,9 @@ export default {
     },
     methods: {
 
+    },
+    created(){
+        console.log(this.order)
     }
 }
 </script>

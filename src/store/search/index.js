@@ -17,7 +17,6 @@ export const search = {
     state: initialState,
     actions: {
         setSearchTerm({ commit }, term) {
-            console.log(term, "SEARCH TERM FROM VUEX")
             commit('setSearchTerm', term)
         },
         setSelectedCategories({ commit }, categories) {            

@@ -1,5 +1,17 @@
 <template>
     <div>
+        <div class="font-weight-bold d-flex justify-center align-center flex-column" v-if="isCurrentUser" >
+            <div style="font-size: 14px;">FILTERS</div>
+            <v-chip-group v-model="filtersApplied" @change="valueChanged"
+                    column multiple active-class="cyan white--text text--accent-4" >
+                <v-chip filter :disabled="loading" :value="true" >
+                    IN STOCK
+                </v-chip>
+                <v-chip filter :disabled="loading" :value="false" >
+                    OUT OF STOCK
+                </v-chip>
+            </v-chip-group>
+        </div>
         <div v-if="loading">
             <Loader />
         </div>
@@ -8,48 +20,12 @@
                 <InfoPageButton :icon="booksPostedInfo" :message="(isCurrentUser ? `You have` : `${profileUsername} has`) + ' not posted any books for sale'" />
             </div>
             <div style="" v-else >
-                <div class="font-weight-bold d-flex justify-center align-center flex-column" v-if="isCurrentUser" >
-                    <div style="font-size: 14px;">FILTERS</div>
-                    <v-chip-group v-model="filtersApplied" @change="valueChanged"
-                            column multiple active-class="cyan white--text text--accent-4" >
-                        <v-chip filter :disabled="filterLoading" >
-                            IN STOCK
-                        </v-chip>
-                        <v-chip filter :disabled="filterLoading" >
-                            OUT OF STOCK
-                        </v-chip>
-                    </v-chip-group>
-                </div>
                 <div class="font-weight-bold my-4" style="text-align: center; font-size: 20px;">
                     {{booksPosted.length}} books posted for sale
                 </div>
                 <div class="cart-item-container" v-for="book in booksPosted" :key="book.id" >
                     <div class="book-card-outer">
                         <BookCard :book="book" />
-                    </div>
-                    <div style="width: 100%; max-width: 400px;" class="mb-4">
-                        <v-card style="width: 100%;">
-                            <div style="display: flex; align-items: center; justify-content: center; width: 100%;">
-                                <div class="cart-metadata" >
-                                    <div class="cart-metadata-2" >
-                                        <img :src="quantityIcon" style="width: 35px; height: 35px; margin-bottom: 6px;" />
-                                        <div class="font-weight-bold" style="margin-bottom: 3px; font-size: 15px;">Quantity</div>                                
-                                    </div>
-                                    <div class="order-buttons mt-2" >
-                                        <img class="increment-button" :src="plusIcon" />
-                                        <div class="mx-4">0</div>
-                                        <img class="increment-button" :src="minusIcon" />
-                                    </div>
-                                </div>
-                                <div class="cart-metadata">
-                                    <div class="cart-metadata-2">
-                                        <img :src="grossAmountIcon" style="width: 35px; height: 35px; margin-bottom: 6px;" />
-                                        <div class="font-weight-bold" style="margin-bottom: 3px; font-size: 15px;">Amount</div>                                
-                                    </div>
-                                    <div>245</div>
-                                </div>
-                            </div>
-                        </v-card>
                     </div>
                 </div>
             </div>
@@ -79,9 +55,6 @@ import InfoPageButton from "../InfoPages/InfoPageButton"
 import Loader from "../UI/Loader"
 
 import axios from "axios"
-//import { getBook } from '../../../../bookstoreamplify/src/graphql/queries'
-//const API_URL1 = "https://4j5jc4gcn7.execute-api.ap-south-1.amazonaws.com/dev"
-//const API_URL2 = "http://localhost:8080"
 
 export default {
     name: "BooksPosted",
@@ -106,21 +79,24 @@ export default {
 
             emptyImage,
             filterLoading: false,         
-            filtersApplied: [0, 1],
+            filtersApplied: [true, false],
+            initialFilters: [true, false],
             chipsDisabled: false,
             booksPosted: [],
             loading: false
         }
     },
     methods: {
-        valueChanged(filterValues) {
-            console.log(filterValues, "CHIP VALUE CHANGHED")
-            this.filterLoading = true
+        valueChanged() {
+            this.loading = true
             this.getBooksPosted()
         },
         getBooksPosted() {            
             axios.get(`/book/byProfile/${this.$route.params.id}`, 
-                { params: { statusValues: "true, false" }}).then(res => {
+                { params: { 
+                    //statusValues: "true, false"
+                    statusValues: this.filtersApplied.length === 0 ? this.initialFilters.toString() : this.filtersApplied.toString(),
+                }}).then(res => {
                 console.log(res)
                 this.booksPosted = res.data ? res.data : []
                 this.loading = false
@@ -207,6 +183,7 @@ export default {
 }
 .book-card-outer{
     padding: 14px 14px 14px 0px;
+    width: 100%;
 }
 #info-button{
     display: flex;

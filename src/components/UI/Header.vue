@@ -5,7 +5,7 @@
                 <img class="shrink mr-4" :src="headerIcon"
                     contain transition="scale-transition" width="40"  />
 
-                <div class="font-weight-bold main-header">The Book Store</div>
+                <div class="font-weight-bold main-header">Book Worm</div>
             </div>
 
             <v-spacer></v-spacer>

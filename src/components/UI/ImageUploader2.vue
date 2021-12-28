@@ -35,7 +35,6 @@ export default {
     },
     methods: {
         generateUrlAndBlob(files) {
-            console.log(files, 'FILES')
             for (var i = 0; i < files.length; i++) {
                 this.generateBlob(files[i])
             }
@@ -47,7 +46,6 @@ export default {
             reader.onload = () => {
                 var img = new Image;
                 img.onload = () => {
-                    console.log("The dimensions of the image is " + img.width + "px. "+ img.height + "px.")
                     this.uploadError = false
                     this.errorMessage = ""
 
@@ -56,8 +54,6 @@ export default {
                     inMemoryImages.push(imageUrl)
                     const imageBlobList = [...this.imageBlobList]
                     imageBlobList.push(file)
-                    console.log(JSON.stringify(file), "JSON STRINGIFIED FILE")
-                    console.log(inMemoryImages, imageBlobList, "IN MEMORY IMAGES")
                     this.alterState("inMemoryImages", inMemoryImages)
                     this.alterState("imageBlobList", imageBlobList)
                 }
@@ -68,15 +64,8 @@ export default {
                 img.src = reader.result
             }
             reader.readAsDataURL(file);
-            console.log(reader, "READER")
         }
     },
-    created(){
-
-    },
-    updated(){
-        console.log(this.imageBlobList, this.inMemoryImages, "IMAGE UPLOADER UPDATED")
-    }
 }
 </script>
 

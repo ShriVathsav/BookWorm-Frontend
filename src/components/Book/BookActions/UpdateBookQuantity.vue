@@ -75,8 +75,7 @@ export default {
             this.dialog = false
         },
         wholeNumberInputChange(e){
-            const ress = allowWholeNumbers(e)
-            console.log(ress, "IS NUMBER RESULT")
+            allowWholeNumbers(e)            
         },
         validateAndSubmit(){
             if(!!this.quantity && !!this.deliveryTime && this.deliveryTime == 0 && this.quantity == 0){
@@ -94,7 +93,6 @@ export default {
                 quantity: this.quantity,
                 delivery_time: this.deliveryTime
             }
-            console.log(params)
             axios.put(`/book/${this.$route.params.id}/editQuantity`, params,
             {
                 headers: {

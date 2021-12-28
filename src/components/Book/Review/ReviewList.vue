@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="font-weight-bold mb-3" style="font-size: 18px;">
-            {{reviews.length}} people have reviewed this product
+            {{reviews.length}} reviews
         </div>
         <div class="review-list-container">
             <div v-for="review in reviews" :key="review._id" class="review-outer" >
@@ -26,9 +26,6 @@ export default {
     methods: {
 
     },
-    updated(){
-        console.log(this.reviews, "REVIEWS FROM REVIEW LIST")
-    }
 }
 </script>
 

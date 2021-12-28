@@ -126,10 +126,6 @@ import ordersWaiting from "../../static/Icons/ProfileIcons/ordersWaiting.svg"
 import emptyImage from "../../static/Images/emptyImage.png"
 import Profile from "../../models/Profile"
 import {formatTime} from "../../utility/Helpers"
-//const API_URL1 = "https://4j5jc4gcn7.execute-api.ap-south-1.amazonaws.com/dev"
-//const API_URL2 = "http://localhost:8080"
-
-//import { API, graphqlOperation } from 'aws-amplify'
 
 export default {
     name: "Profile",
@@ -195,14 +191,15 @@ export default {
     created(){
         this.loading = true
         axios.get(`/profile/${this.$route.params.id}`, {}, {
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                }
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
         }).then(res => {
             console.log(res)
             this.profile = new Profile(res.data._id, res.data.cognitoid, res.data.username, res.data.email, 
                     res.data.password, res.data.profile_image, res.data.phone, res.data.address1, res.data.address2, 
                     res.data.pincode, res.data.created_at, res.data.updated_at)
+            console.log(this.profile)
             this.loading = false
         }).catch(err => {
             console.log(err, err.response)

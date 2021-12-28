@@ -79,6 +79,13 @@
                     <div style="padding: 14px 0px;">
                         {{book.description}}
                     </div>
+                    <div class="d-flex align-center justify-center" >
+                        <v-btn outlined color="lime darken-2" id="action-button"
+                                @click="$router.push(`/profile/${book.profile}`)" >
+                            <v-img class="button-icon" :src="viewBookOwnerIcon" ></v-img>
+                            <div>VIEW BOOK OWNER DETAILS</div>
+                        </v-btn>
+                    </div>
                 </v-card>
 
                 <div class="second-content">
@@ -181,9 +188,6 @@
                             <ReviewList :reviews="reviews" />
                         </div>
                     </div>
-                    <div style="display: flex; justify-content: center;" class="pt-4">
-                        <div class="my-3"><CreateReview /></div>
-                    </div>
                 </v-card>
             </div>
         </div>
@@ -196,7 +200,7 @@ import axios from "axios"
 
 import UpdateBookStatus from "./BookActions/UpdateBookStatus"
 import UpdateBookQuantity from "./BookActions/UpdateBookQuantity"
-import CreateReview from "./Review/CreateReview"
+//import CreateReview from "./Review/CreateReview"
 import ReviewList from "./Review/ReviewList"
 import ImageSlider from "./ImageSlider"
 import CartItem from "../../models/CartItem"
@@ -205,6 +209,7 @@ import FullPageLoader from "../UI/FullPageLoader"
 import PageNotFound from "../InfoPages/PageNotFound"
 
 import emptyImage from "../../static/Images/emptyImage.png"
+import viewBookOwnerIcon from "../../static/Icons/BookDisplayIcons/viewBookOwnerIcon.svg"
 
 import sellingPriceIcon from "../../static/Icons/BookDisplayIcons/sellingPrice.svg"
 import mrpIcon from "../../static/Icons/BookDisplayIcons/mrp.svg"
@@ -236,14 +241,10 @@ import AWS from 'aws-sdk'
 require("dotenv").config()
 //import { API, graphqlOperation } from 'aws-amplify'
 //import {getBook as GetBook} from "../../graphql/queries"
-//const API_URL1 = "https://4j5jc4gcn7.execute-api.ap-south-1.amazonaws.com/dev"
-//const API_URL2 = "http://localhost:8080"
-
-//axios.defaults.baseURL = 'https://4j5jc4gcn7.execute-api.ap-south-1.amazonaws.com/dev/';
 
 export default {
     name: "BookDisplay",
-    components: {UpdateBookQuantity, UpdateBookStatus, CreateReview, ImageSlider, 
+    components: {UpdateBookQuantity, UpdateBookStatus, ImageSlider, 
         ReviewList, FullPageLoader, PageNotFound},
     props: [],
     data() {
@@ -261,6 +262,7 @@ export default {
             reviews: [],
             bookInfoContent: [],            
             loading: false,
+            viewBookOwnerIcon,
 
             sellingPriceIcon,
             mrpIcon,
@@ -293,7 +295,6 @@ export default {
             this[state] = obj
         },
         calculateProperRating(nume, deno){
-            console.log(this.book.averageRating)
             return (!!nume && !!deno) ? nume/deno : 0
         },
         getAverageRating(){
@@ -335,12 +336,10 @@ export default {
             return moment(new Date()).format("Do MMM YYYY")
         },
         formatDeliveryTime(deliveryTime){
-            console.log(deliveryTime)
             return moment(new Date()).add(deliveryTime,'d').format("Do MMM YYYY")
         },
         async getPresignedUrls(image){
             //const s3 = new AWS.S3()
-            console.log(image, "PRINTING IMAGE FOR WHICH PRESIGNED URL IS GEN")
             return new Promise((resolve,reject) => {
                 const myBucket = this.s3Bucket
                 const myKey = image
@@ -364,7 +363,6 @@ export default {
             if(book.images){
                 for (let image of book.images) {
                     const signedUrl = await this.getPresignedUrls(image)
-                    console.log(signedUrl, "SIGNED URL BOOK DISPLAY")
                     imagesList.push(signedUrl)
                 }   
             }
@@ -402,15 +400,12 @@ export default {
                 book.one_star
             )
             this.book = newBook
-            console.log(newBook, "PRINTING NEW BOOK VARIABLE")
             this.loading = false
         },
         isBookInCart(){
-            const isBook = this.$store.state.cart.findIndex(item => {                
-                console.log(this.bookId, item.book.id)
+            const isBook = this.$store.state.cart.findIndex(item => {
                 return item.book.id === this.bookId
             }) === -1 ? false : true
-            console.log(isBook, this.$store.state.cart, "IS BOOK IN CART")
             return isBook
         },
         addItemToCart(){
@@ -421,12 +416,10 @@ export default {
         }
     },
     created(){
-        console.log(this.$route.params.id)
-
         this.loading = true
         axios.get(`/book/${this.$route.params.id}`, {}, {
                 headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
+                    "Content-Type": "application/x-www-form-urlencoded",
                 }
         }).then(res => {
             console.log(res)
@@ -450,9 +443,6 @@ export default {
             console.log(err, err.response)
         })
         
-    },
-    updated() {
-        console.log(this.booknew, "PRINTING BOOKJ UPDATION")
     },
     beforeCreate(){
         AWS.config.update({

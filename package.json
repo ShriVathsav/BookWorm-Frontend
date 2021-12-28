@@ -2,7 +2,7 @@
   "name": "bookworm",
   "version": "0.1.0",
   "private": true,
-  "proxy": "https://4j5jc4gcn7.execute-api.ap-south-1.amazonaws.com/dev/",
+  "proxy": " https://nyg2dwhe69.execute-api.ap-south-1.amazonaws.com/prod",
   "scripts": {
     "serve": "vue-cli-service serve",
     "starts": "npm run serve",

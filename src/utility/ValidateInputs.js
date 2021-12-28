@@ -1,6 +1,5 @@
 export const validateNumeric = (num, min, max) => {
     if(Object.is(Number(num), NaN)) return false
-    console.log(num <= max, num >=min, num, num <= max && num >=min)
     return num <= max && num >=min
 }
 
@@ -10,9 +9,7 @@ export const removeSpacesFromTextInput = (val) => {
 
 export const allowWholeNumbers = (evt) => {
     evt = (evt) ? evt : window.event;
-    console.log("CALLING IS NUMBER", evt)
     var charCode = (evt.which) ? evt.which : evt.keyCode;
-    console.log(charCode, "CHARCODE", charCode > 31 && (charCode < 48 || charCode > 57))
     if (charCode > 31 && (charCode < 48 || charCode > 57)) {
         evt.preventDefault();
     } else {

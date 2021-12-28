@@ -28,7 +28,6 @@ export const cart = {
             } else {
                 state[itemIndex].quantity += 1
             }*/
-            console.log(item, "CART ITEM FROM VUEX")
             state.push(item)
         },
         increaseItemQuantity(state, {index, maxStocks}) {
@@ -53,16 +52,13 @@ export const cart = {
             state.splice(index, 1)
         },
         clearCart(state){
-            console.log(state, "EMPTYING CART FROM CART STATE")
             state.splice(0, state.length)
-            console.log(state, "AFTEWR EMPTYING CART FROM CART STATE")
         }
     },
     getters: {
         grandTotal(state){
             let grandTotalAmount = 0
             for(const item of state){
-                console.log(item, "FROM GRAND TOTAL VUEX")
                 grandTotalAmount += item.quantity * item.book.sellingPrice
             }
             return grandTotalAmount

@@ -12,14 +12,14 @@
                             <img :src="orderedOn" style="width: 35px; height: 35px; margin-bottom: 6px;" />
                             <div class="font-weight-bold" style="margin-bottom: 3px; font-size: 15px;">Ordered On</div>                                
                         </div>
-                        <div>{{order.created_at}}</div>
+                        <div>{{formatDate(order.created_at)}}</div>
                     </div>
                     <div class="cart-metadata">
                         <div class="cart-metadata-2">
                             <img :src="deliveryTime" style="width: 35px; height: 35px; margin-bottom: 6px;" />
                             <div class="font-weight-bold" style="margin-bottom: 3px; font-size: 15px;">{{order.status === "DELIVERED" ? "Delivered" : "Delivery"}} On</div>
                         </div>
-                        <div>{{order.deliverydate}}</div>
+                        <div>{{formatDate(order.delivery_date)}}</div>
                     </div>
                 </div>
                 <div style="display: flex; align-items: center; justify-content: center; width: 100%;">
@@ -38,9 +38,9 @@
                         <div>Rs. {{order.amount}}</div>
                     </div>
                 </div>
-                <div style="display: flex; align-items: center; width: 100%;" class="pb-4 px-4">
+                <div style="display: flex; align-items: center; width: 100%;" class="pa-4 pb-6">
                     <div style="width: 50%; text-align: center;">
-                        <span class="order-links" @click="toggleOrderStatusShow" >
+                        <span class="order-links" @click="toggleOrderStatusShow" v-if="order.status !== 'DELIVERED'" >
                             Change Order Status</span>
                     </div>
                     <div style="width: 50%;">
@@ -90,17 +90,16 @@ import yourOrdersInfo from "../../static/Icons/ProfileIcons/yourOrdersInfo.svg"
 import inProgressStatus from "../../static/Icons/ProfileIcons/OrderIcons/inProgressStatus.svg"
 import inTransitStatus from "../../static/Icons/ProfileIcons/OrderIcons/inTransitStatus.svg"
 import deliveredStatus from "../../static/Icons/ProfileIcons/OrderIcons/deliveredStatus.svg"
-import collectedStatus from "../../static/Icons/ProfileIcons/OrderIcons/collectedStatus.svg"
+//import collectedStatus from "../../static/Icons/ProfileIcons/OrderIcons/collectedStatus.svg"
 import deliveryTime from "../../static/Icons/ProfileIcons/OrderIcons/deliveryTime.svg"
 import orderedOn from "../../static/Icons/ProfileIcons/OrderIcons/orderedOnIcon.svg"
 
 import emptyImage from "../../static/Images/emptyImage.png"
-import BookCard from "../Book/BookCard"
+import BookCard from "../Book/BookCardAlias"
 import DeliveryDetails from "./DeliveryDetails"
+import moment from 'moment'
 
 import axios from "axios"
-const API_URL1 = "https://4j5jc4gcn7.execute-api.ap-south-1.amazonaws.com/dev"
-//const API_URL2 = "http://localhost:8080"
 
 export default {
     name: "OrdersWaiting",
@@ -126,7 +125,7 @@ export default {
             inProgressStatus,
             inTransitStatus,
             deliveredStatus,
-            collectedStatus,
+            //collectedStatus,
             deliveryTime,
             orderedOn,
 
@@ -134,18 +133,19 @@ export default {
 
             orderStatusChangeShow: false,
             orderStatus: this.order.status,
-            orderStatusList: ["IN PROGRESS", "IN TRANSIT", "COLLECTED", "DELIVERED"],
+            orderStatusList: ["IN PROGRESS", "IN TRANSIT", "DELIVERED"],
             statusUpdateLoading: false
         }
     },
     methods: {
+        formatDate(date){            
+            return moment(new Date(date)).format("Do MMM YYYY")
+        },
         getOrderStatus(){
             if(this.order.status === "IN PROGRESS"){
                 return inProgressStatus
             } else if(this.order.status === "IN TRANSIT"){
                 return inTransitStatus
-            } else if(this.order.status === "COLLECTED"){
-                return collectedStatus
             } else if(this.order.status === "DELIVERED"){
                 return deliveredStatus
             }
@@ -160,16 +160,18 @@ export default {
             this.statusUpdateLoading = true
             const params = {
                 _id: this.order._id,
-                status: this.orderStatus
+                status: this.orderStatus,
+                delivery_date: this.orderStatus === "DELIVERED" ? new Date().toISOString() : this.order.deliverydate
             }
-            axios.put(`${API_URL1}/order/${this.order._id}/updateStatus`, params,
+            axios.put(`/order/${this.order._id}/updateStatus`, params,
             {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
             }).then(res => {
                 console.log(res)
-                this.order.status = res.data.status
+                this.order.status = this.orderStatus
+                this.order.deliverydate = new Date().toISOString()
                 this.statusUpdateLoading = false
             }).catch(err => {
                 console.log(err.response)
@@ -251,6 +253,7 @@ export default {
 }
 .book-card-outer{
     padding: 14px 14px 14px 0px;
+    width: 100%;
 }
 #info-button{
     display: flex;

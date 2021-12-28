@@ -5,9 +5,9 @@
             <div class="message">
                 {{message}}
             </div>
-            <v-btn outlined x-large color="cyan" @click.native="$router.push('/')" id="info-button">
-                <v-img class="home-icon" :src="homePage" ></v-img>
-                <div>GO TO HOMEPAGE</div>
+            <v-btn outlined color="cyan" @click.native="$router.push(buttonLink || '/')" id="info-button">
+                <v-img class="home-icon" :src="buttonIcon || homePage" ></v-img>
+                <div>{{buttonMessage || "GO TO HOMEPAGE"}}</div>
             </v-btn>
         </div>
     </div>
@@ -19,8 +19,8 @@ import homePage from "../../static/Icons/goToHomePage.svg"
 export default {
     name: "InfoPage",
     components: {},
-    props: ["icon", "message"],
-    data: () => {
+    props: ["icon", "message", "buttonIcon", "buttonMessage", "buttonLink"],
+    data() {
         return {
             homePage
         }
@@ -44,8 +44,8 @@ export default {
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    padding: 14px 30px;
-    font-size: 19px;
+    padding: 12px 30px;
+    font-size: 16px;
     height: 65px;
     color: white;
     /*border-radius: 0px;
@@ -59,8 +59,8 @@ export default {
 }
 
 .home-icon{
-    width: 45px;
-    height: 45px;
+    width: 35px;
+    height: 35px;
     margin-right: 16px;
 }
 

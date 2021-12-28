@@ -2,7 +2,7 @@
     <v-row justify="center" style="height: 100%">
         <v-dialog v-model="dialog" persistent scrollable >
             <template v-slot:activator="{ on, attrs }" class="ma-4">   
-                <img :src="coverImage || emptyImage" @error="$event.target.src=emptyImage" v-bind="attrs" v-on="on" class="book-image pa-1" /> 
+                <img :src="images[0] || emptyImage" @error="$event.target.src=emptyImage" v-bind="attrs" v-on="on" class="book-image pa-1" /> 
             </template>
             <v-card>
                 <v-card-title class="headline" >
@@ -77,12 +77,6 @@ export default {
             console.log(e, "PRINTING ERROR")
         }
     },
-    created(){
-        console.log(this.coverImage, this.images, "COVERIMAGE")
-    },
-    updated(){
-        console.log(this.coverImage, this.images, "COVERIMAGE")
-    }
 }
 </script>
 

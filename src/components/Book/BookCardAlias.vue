@@ -2,17 +2,17 @@
     <div>
         <v-card class="mx-auto" max-width="374" style="cursor: pointer;" @click="$router.push(`/book/${book._id}`)" id="book-card" >
             <v-img height="250" :src="coverImageUrl || noBookImagesIcon" @error="invokeOnError()"
-                style="border-bottom: 1px solid rgba(0, 0, 0, 0.12);" ></v-img>
+                style="border-bottom: 1px solid rgba(0, 0, 0, 0.12);" ></v-img>            
             <v-card-title style="line-height: 1.4; font-size: 18px;">{{book.title}}</v-card-title>
             <v-card-text>
                 <v-row align="center" class="mx-0" >
                     <v-rating :value="book.average_rating" color="amber" dense half-increments readonly size="14"></v-rating>
-                    <div class="grey--text ml-4">{{book.averagerating}} ({{book.reviewcount}})</div>
+                    <div class="grey--text ml-4">{{book.average_rating}} ({{book.review_count}})</div>
                     <v-spacer></v-spacer>                    
                     <v-chip class="font-weight-bold text-uppercase" color="lime darken-3" outlined small >{{book.condition}}</v-chip>
                 </v-row>
                 <div class="mt-5 d-flex align-center">
-                    <v-chip :color="book.stocksleft > 0 ? 'deep-purple accent-4' : 'brown'" 
+                    <v-chip :color="book.stocks_left > 0 ? 'deep-purple accent-4' : 'brown'" 
                             label text-color="white" style="height: 35px; margin-right: 14px;" >
                         <v-img class="button-icon" :src="book.stocks_left > 0 ? inStockIcon : outOfStockIcon" ></v-img>
                         <div class="font-weight-bold">{{book.stocks_left > 0 ? "IN STOCK" : "OUT OF STOCK"}}</div>

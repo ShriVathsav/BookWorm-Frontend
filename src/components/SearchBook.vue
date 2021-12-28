@@ -78,8 +78,7 @@ export default {
         },
     },
     methods: {
-        toggle() {
-            console.log(this.selectedCategories)
+        toggle() {            
             this.$nextTick(() => {
                 if (this.allCategoriesSelected) {
                     this.selectedCategories = []
@@ -96,9 +95,6 @@ export default {
             this.searchBookHandler()
         }
     },
-    updated(){
-        console.log(this.$store.state, "STATE")
-    }
 }
 </script>
 

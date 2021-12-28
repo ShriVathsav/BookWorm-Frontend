@@ -83,8 +83,6 @@ import {validateEmail, removeSpacesFromTextInput,
 import axios from "axios"
 
 const REQUIRED_FIELD = "This field is mandatory"
-const API_URL1 = "https://4j5jc4gcn7.execute-api.ap-south-1.amazonaws.com/dev"
-//const API_URL2 = "http://localhost:8080"
 
 export default {
     name: "Register",
@@ -165,7 +163,7 @@ export default {
                 pincode: this.pincode,
             }
             console.log(params)
-            axios.post(`${API_URL1}/profile`, params,
+            axios.post(`/profile`, params,
             {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"

@@ -45,8 +45,6 @@
 
 <script>
 import hideIcon from "../../../static/Icons/BookDisplayIcons/hideBook.svg"
-//const API_URL1 = "https://4j5jc4gcn7.execute-api.ap-south-1.amazonaws.com/dev"
-//const API_URL2 = "http://localhost:8080"
 import axios from "axios"
 
 export default {

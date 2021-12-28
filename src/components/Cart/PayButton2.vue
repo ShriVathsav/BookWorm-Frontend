@@ -47,6 +47,7 @@ import {removeSpacesFromTextInput, allowWholeNumbers} from "../../utility/Valida
 import Order from "../../models/Order"
 import axios from "axios"
 
+
 export default {
     name: "PayButton2",
     components: {},
@@ -121,8 +122,6 @@ export default {
                 this.contactNumber !== ""
         },
         wholeNumberInputChange(e){
-            //console.log(e, "KEYPRESS EVENT")
-            //const res = isNumber(e)
             const ress = allowWholeNumbers(e)
             console.log(ress, "IS NUMBER RESULT")
         },
@@ -132,47 +131,53 @@ export default {
         },
         async createToken() {
             this.alterState("loading", true)
-            const { token, error } = await this.$stripe.createToken(this.cardNumber);
-            console.log(token, error, "STRIPE ERROR")
+            const { token, error } = await this.$stripe.createToken(this.cardNumber);            
             if (error) {
                 // handle error here
                 document.getElementById('card-error').innerHTML = error.message;
                 this.alterState("loading", false)
+                console.log(error, "STRIPE ERROR")
                 return;
             }
-            console.log(token);
+            //console.log(token);
             // handle the token
             this.makePayment(token.id)
         },
         makePayment(token) {
             const ordersArray = []
             for (let cartItem of this.$store.state.cart){
+                console.log(cartItem.book.deliveryTime)
+                var result = new Date();
+                result.setDate(result.getDate() + cartItem.book.deliveryTime)
+                console.log(result)
                 ordersArray.push(new Order(
-                    cartItem.book.deliveryDate, 
+                    result.toISOString(),
                     cartItem.book.profile,
-                    "6056398392d4647c1bc056f7", 
+                    this.$store.getters['auth/getUserProfile'].id, 
                     cartItem.book.id,
                     cartItem.quantity, 
                     cartItem.totalAmount,
-                    "buyername",
-                    "buyer@email.com",
+                    this.$store.getters['auth/getUserProfile'].username,
+                    this.$store.getters['auth/getUserProfile'].email,
                     this.contactNumber,
                     this.addressLine1,
                     this.addressLine2,
-                    this.pincode
+                    this.pincode,
+                    new Date().toISOString(),
+                    new Date().toISOString()
                 ))
             }
+            console.log(ordersArray)
         
             let payment = {
                 stripe_token: token,
-                total_amount: 2500,//this.$store.getters['cart/grandTotal'],
+                total_amount: this.$store.getters['cart/grandTotal'] * 100,
                 description: "Product description test",
-                receipt_email: "email@email.com",
+                receipt_email: this.$store.getters['auth/getUserProfile'].email,
                 orders: ordersArray
             }
 
-            console.log(ordersArray, payment, "PRINTING ORDER PAYMENT")
-            axios.post("http://localhost:8080/order", payment,
+            axios.post("/order", payment,
             {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -187,7 +192,8 @@ export default {
                 console.log(err.response)
                 document.getElementById('card-error').innerHTML = err.message;
             })
-        }
+        },
+
     },
 }
 </script>

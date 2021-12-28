@@ -100,9 +100,7 @@ export default {
                 this.$store.state.cart[0].quantity, 
                 this.$store.state.cart[0].totalAmount
             )
-
-            console.log(order, "PRINTING ORDER PAYMENT")
-            axios.post("http://localhost:8080/order", order,
+            axios.post("/order", order,
             {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -114,18 +112,8 @@ export default {
             })
         }
     },
-    updated(){
-        console.log(this.$store.state.cart, "CART UPDATED")
-    },
     created(){
-        console.log(this.$store.state.cart, "CART")
-        /*
-        axios.get("http://localhost:8080/books").then(res => {
-            console.log(res)
-            this.books = res.data
-        }).catch(err => {
-            console.log(err.response)
-        })*/
+        console.log(this.$store.state)
     }
 }
 </script>

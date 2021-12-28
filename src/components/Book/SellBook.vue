@@ -50,7 +50,7 @@
                 <div v-if="step === '1'">
                     <div style="font-weight: 700; text-align: center; margin-bottom: 10px;">Basic Details</div>
                     <v-text-field filled label="Title of the Book*" placeholder="Enter title of the book" v-model="title"
-                        ref="title" @input.native="textInputChangeOneSpace($event, 'title')" hint="hint" 
+                        ref="title" @input.native="textInputChangeOneSpace($event, 'title')" 
                         color="purple" background-color="purple lighten-5" persistent-hint  >
                     </v-text-field>
                     <v-textarea v-model="description" auto-grow filled color="purple" label="Description*"
@@ -140,10 +140,6 @@
                         ref="sellingPrice" @keypress.native="integerInputChange($event, 'sellingPrice')" 
                         background-color="purple lighten-5" color="purple" >
                     </v-text-field>
-                    <v-text-field filled label="Is this a one time sale transaction*" placeholder="Selling Price" 
-                        ref="sellingPrice" @input.native="numericInputChange($event, 'sellingPrice')" 
-                        background-color="purple lighten-5" color="purple" >
-                    </v-text-field>
                     <v-card-actions>
                         <v-btn tile color="cyan lighten-1" @click.native="alterStep('2')" >
                             <img :src="leftArrow" style="width: 20px; height: 20px;" />
@@ -177,11 +173,6 @@
                     <div style="padding: 14px; margin-top: 10px; background-color: #FF5252; color: white;" v-if="error">
                         {{errorMessage}}
                     </div>
-                    <v-btn x-large block color="purple" style="margin-top: 14px;" 
-                        @click.native="getPreSignedUrl" >
-                        <img :src="sellBookIcon" style="width: 35px; height: 35px;" />
-                        <div style="color: white" class="ml-4">POST BOOK FOR SALE</div>
-                    </v-btn>
                     <v-btn x-large block color="purple" style="margin-top: 14px;" 
                         @click.native="validateBookAndSubmit" :loading="submitLoading" >
                         <img :src="sellBookIcon" style="width: 35px; height: 35px;" />
@@ -273,20 +264,7 @@ export default {
         }
     },
     methods: {
-        getPreSignedUrl(){
-            //const s3 = new AWS.S3()
-            const myBucket = this.s3Bucket
-            const myKey = '0280bf3c-d532-4182-9e6a-38aedbc53196 - 3.png'
-            const signedUrlExpireSeconds = 60 * 5
-            const url = this.myBucket.getSignedUrl('getObject', {
-                Bucket: myBucket,
-                Key: myKey,
-                Expires: signedUrlExpireSeconds
-            })
-            console.log(url, "PRINTING SIGNED URL")
-        },
-        async uploadImageToS3() {
-            console.log("UPLOADING IMAGE")  
+        async uploadImageToS3() {            
             const objectKeysArray = []     
             for(const file of this.imageBlobList){
                 const objectKey = uuidv4() + " - " + file.name
@@ -296,10 +274,8 @@ export default {
                     Key: objectKey,
                     ContentType: file.type
                 }                
-                console.log("UPLOADING IMAGE 2")
                 try{
-                    const res = await this.myBucket.putObject(params).promise()
-                    console.log(objectKey, res, "OBJECT KEY")
+                    await this.myBucket.putObject(params).promise()
                     objectKeysArray.push(objectKey)
                 } catch(err){
                     this.error = true
@@ -398,7 +374,6 @@ export default {
             return uploadedImagesCopy
         },
         submitBook(imagesList){
-            console.log(this.finalImagesList, "IMAGES LIST PRINT")
             const params = {
                 title: this.title,
                 description: this.description,
@@ -424,14 +399,11 @@ export default {
         },
         numericInputChange(e, ref){
             const val = e.target.value
-            const prevVal = this[ref]
-            console.log(this[ref], val, this.$refs[ref].value, validateNumeric(val, 0, 10**9))
+            const prevVal = this[ref]            
             if(validateNumeric(val, 0, 10**9)){
                 this[ref] = val
-                console.log("true block", val)
             }else{
-                this[ref] = prevVal
-                console.log("false block", prevVal)
+                this[ref] = prevVal                
             }
         },
         handleInput(e, ref) {
@@ -444,12 +416,10 @@ export default {
             this.previousPrice = this.price
         },
         integerInputChange(e, ref){
-            const ress = allowIntegers(e, this[ref])
-            console.log(ress, "IS NUMBER RESULT")
+            allowIntegers(e, this[ref])
         },
         wholeNumberInputChange(e){
-            const ress = allowWholeNumbers(e)
-            console.log(ress, "IS NUMBER RESULT")
+            allowWholeNumbers(e)
         },
         textInputChangeNoSpaces(e, ref){
             const val = e.target.value
@@ -480,9 +450,6 @@ export default {
             this.deliveryTime = 7
             this.step = "4"
         }
-    },
-    updated() {
-        console.log(this.inMemoryImages, this.imageBlobList, "SELL BOOK UPDATED")
     },
     beforeCreate(){
         AWS.config.update({

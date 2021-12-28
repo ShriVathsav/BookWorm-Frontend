@@ -35,8 +35,6 @@ import Filters from './Book/Filters'
 import Loader from './UI/Loader'
 import InfoPageButton from './InfoPages/InfoPageButton'
 import axios from "axios"
-//const API_URL1 = "https://4j5jc4gcn7.execute-api.ap-south-1.amazonaws.com/dev"
-//const API_URL2 = "http://localhost:8080"
 
 import searchBook from "../static/Icons/OtherIcons/searchBook2.svg"
 import viewIcon from "../static/Icons/BookDisplayIcons/viewIcon.svg"
@@ -70,7 +68,7 @@ export default {
                 maxPrice: this.$store.state.search.maxPriceFilter,
                 bookType: this.$store.state.search.bookTypeFilter,
             }
-            console.log(params, "PARAMS FILTERS")
+            console.log(params, "SEARCH PARAMS")
             axios.get(`/book/search`, {
                 params
             }, {

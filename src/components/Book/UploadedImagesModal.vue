@@ -71,12 +71,6 @@ export default {
     },
     methods: {
 
-    },
-    created(){
-        console.log("UPLOADED IMAGES MODAL CREATED")
-    },
-    updated() {
-        console.log(this.uploadedImages, this.inMemoryImages, "UPLOADED IMAGES MODAL UPDATED")
     }
 }
 </script>

@@ -66,7 +66,6 @@
 <script>
 import editUserIcon from "../../static/Icons/ProfileIcons/editProfile.svg"
 import unknownUser2 from "../../static/Icons/ProfileIcons/unknownUser2.svg"
-const API_URL1 = "https://4j5jc4gcn7.execute-api.ap-south-1.amazonaws.com/dev"
 
 import axios from "axios"
 import Profile from "../../models/Profile"
@@ -116,8 +115,6 @@ export default {
                 this.pincode !== ""
         },
         wholeNumberInputChange(e){
-            //console.log(e, "KEYPRESS EVENT")
-            //const res = isNumber(e)
             const ress = allowWholeNumbers(e)
             console.log(ress, "IS NUMBER RESULT")
         },
@@ -171,13 +168,14 @@ export default {
                 pincode: this.pincode.toString(),
                 updatedAt: new Date().toISOString()
             }
-            console.log(params)
-            axios.put(`${API_URL1}/profile/${this.$route.params.id}`, JSON.stringify(params)).then(res => {
+            axios.put(`/profile/${this.$route.params.id}`, JSON.stringify(params)).then(res => {
                 console.log(res)
-                const profile = new Profile(res.data._id, res.data.cognitoid, res.data.username, res.data.email, 
-                    res.data.password, res.data.profile_image, res.data.phone, res.data.address1, res.data.address2, 
-                    res.data.pincode, res.data.created_at, res.data.updated_at)
-                this.alterState("profile", profile)
+                const profile = {...this.profile}
+                const modifiedProfile = new Profile(profile._id, profile.cognitoid, params.username, profile.email, 
+                    profile.password, profile.profile_image, params.phone, params.address1, params.address2, 
+                    params.pincode, profile.created_at, params.updated_at)
+                this.alterState("profile", modifiedProfile)
+                console.log(profile)
                 this.editProfileLoading = false
                 this.dialog = false
             }).catch(err => {
@@ -188,9 +186,6 @@ export default {
             })
         }
     },
-    created(){
-        console.log(this.profile, "PROFILE PROPS")
-    }
 }
 </script>
 

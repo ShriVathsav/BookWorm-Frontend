@@ -45,8 +45,6 @@ import Profile from "../../models/Profile"
 import axios from "axios"
 
 const REQUIRED_FIELD = "This field is mandatory"
-const API_URL1 = "https://4j5jc4gcn7.execute-api.ap-south-1.amazonaws.com/dev"
-//const API_URL2 = "http://localhost:8080"
 
 export default {
     name: "Login",
@@ -102,7 +100,7 @@ export default {
             }
         },
         getUserProfile(cognitoId){
-            axios.get(`${API_URL1}/profile/getByCognitoId/${cognitoId}`, {}, {
+            axios.get(`/profile/getByCognitoId/${cognitoId}`, {}, {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -141,7 +139,7 @@ export default {
             }
             return validateEmail(this.username)
         }
-    }
+    },
 }
 </script>
 

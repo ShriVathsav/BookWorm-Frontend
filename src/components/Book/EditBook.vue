@@ -4,8 +4,14 @@
             <FullPageLoader />
         </div>
         <div v-else >
-            <SellBook :book="book" :submitHandler="editBookHandler" :submitLoading="editBookLoading" 
-                :editBookErrorMessage="errorMessage" mode="edit" />
+            <div v-if="!editSuccess" >
+                <SellBook :book="book" :submitHandler="editBookHandler" :submitLoading="editBookLoading" 
+                    :editBookErrorMessage="errorMessage" mode="edit" />
+            </div>
+            <div v-else >
+                <InfoPage :icon="postSuccessIcon" message="Your book has been edited successfully!"
+                    :buttonLink="`/book/${$route.params.id}`"  buttonMessage="VIEW BOOK" :buttonIcon="viewIcon" />
+            </div>
         </div>
     </div>
 </template>
@@ -16,11 +22,14 @@ import SellBook from "./SellBook"
 import FullPageLoader from "../UI/FullPageLoader"
 import Book from "../../models/Book"
 import AWS from 'aws-sdk'
+import InfoPage from "../InfoPages/InfoPage"
+import postSuccessIcon from "../../static/Icons/BookDisplayIcons/postSuccessIcon.svg"
+import viewIcon from "../../static/Icons/BookDisplayIcons/viewIcon.svg"
 require("dotenv").config()
 
 export default {
     name: "EditBook",
-    components: {SellBook, FullPageLoader},
+    components: {SellBook, FullPageLoader, InfoPage},
     props: [],
     data() {
         return {
@@ -31,6 +40,10 @@ export default {
                 signatureVersion: 'v4',
                 region: process.env.VUE_APP_BUCKET_REGION
             }),
+
+            postSuccessIcon,
+            viewIcon,
+
             bookId: this.$route.params.id,
             book: {},
             loading: true,
@@ -45,11 +58,7 @@ export default {
             this.editBookLoading = true
             input._id = this.book.id
             axios.put(`/book/${this.bookId}`, input,
-            {
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                }
-            }).then(res => {
+            ).then(res => {
                 this.editBookLoading = false
                 console.log(res)
                 this.editSuccess = true
@@ -64,8 +73,6 @@ export default {
             })
         },
         async getPresignedUrls(image){
-            //const s3 = new AWS.S3()
-            console.log(image, "PRINTING IMAGE FOR WHICH PRESIGNED URL IS GEN")
             return new Promise((resolve,reject) => {
                 const myBucket = this.s3Bucket
                 const myKey = image
@@ -123,7 +130,6 @@ export default {
                 book.one_star
             )
             this.book = newBook
-            console.log(newBook, "PRINTING NEW BOOK VARIABLE")
             this.loading = false
         },
     },

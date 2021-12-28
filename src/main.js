@@ -15,7 +15,8 @@ Vue.use(AmplifyPlugin, AmplifyModules);
 
 Vue.config.productionTip = false
 
-axios.defaults.baseURL = 'https://4j5jc4gcn7.execute-api.ap-south-1.amazonaws.com/dev/';
+axios.defaults.baseURL = 'https://nyg2dwhe69.execute-api.ap-south-1.amazonaws.com/prod';
+
 const options = {
     pk: "pk_test_hD6Scfa3aO6x1rRsFFCW5xML00kvOxvdWU",
     //stripeAccount: process.env.STRIPE_ACCOUNT,

@@ -6,9 +6,12 @@ const initialState = user
     ? { status: { loggedIn: true }, user }
     : { status: { loggedIn: false }, user: null };
 */
+import axios from 'axios'
+
 const initialState = {
     loggedIn: false,
     user: null,
+    token: "",
     userProfile: JSON.parse(localStorage.getItem('bookStoreUserProfile'))
 }
 
@@ -22,20 +25,16 @@ export const auth = {
         loginSuccess({ commit }, user) {
             commit('loginSuccess', user)
         },
-        logout({ commit }) {
-            console.log(commit)
+        logout({ commit }) {            
             commit('logout')
         },
         registerSuccess({ commit }) {
-            console.log(commit)
             commit('registerSuccess')
         },
         registerFailure({ commit }) {
-            console.log(commit)
             commit('registerFailure')
         },
         setUserProfile({ commit }, profile) {
-            console.log(commit)
             commit('setUserProfile', profile)
         },
         changeProfileImage({ commit }, profilePicUrl) {
@@ -44,34 +43,43 @@ export const auth = {
     },
     mutations: {
         loginSuccess(state, user) {
-            console.log("LOGIN SUCCESS CALLED")
+            console.log("LOGIN SUCCESS")
             state.loggedIn = true;
             state.user = user;
+            const token = user.signInUserSession.accessToken.jwtToken
+            state.token = token
+            axios.defaults.headers.common['Authorization'] = token;
             localStorage.setItem('bookStoreUser', JSON.stringify(user))
         },
         loginFailure(state) {
-            console.log("LOGIN FAILURE CALLED")
+            console.log("LOGIN FAILURE")
             state.loggedIn = false;
             state.user = null;
+            state.token = ""
             localStorage.removeItem('bookStoreUser')
             //localStorage.removeItem('bookStoreUserProfile')
         },
         logout(state) {
-            console.log("LOGOUT CALLED")
+            console.log("LOGOUT")
             state.loggedIn = false;
             state.user = null;
+            state.token = ""
             localStorage.removeItem('bookStoreUser')
             localStorage.removeItem('bookStoreUserProfile')
         },
         registerSuccess(state) {
-            console.log("REGISTER SUCCESS CALLED")
+            console.log("REGISTER SUCCESS")
             state.loggedIn = false;
+            state.user = null;
+            state.token = ""
             localStorage.removeItem('bookStoreUser')
             localStorage.removeItem('bookStoreUserProfile')
         },
         registerFailure(state) {
-            console.log("REGISTER FAILURE CALLED")
+            console.log("REGISTER FAILURE")
             state.loggedIn = false;
+            state.user = null;
+            state.token = ""
             localStorage.removeItem('bookStoreUser')
             localStorage.removeItem('bookStoreUserProfile')
         },
@@ -87,12 +95,10 @@ export const auth = {
         }
     },
     getters: {
-        isAuthenticated(state){
-            console.log(state, "FROM GETTERS VUEX")
+        isAuthenticated(state){            
             return !!state.loggedIn && !!state.user
         },
         getUserProfile(state){
-            console.log(state, "FROM GETTERS VUEX")
             return state.userProfile || JSON.parse(localStorage.getItem('bookStoreUserProfile'))
         }
     }

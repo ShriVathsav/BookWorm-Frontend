@@ -6,7 +6,15 @@
                 <div class="font-weight-bold review-profile" style="font-size: 14px;"
                     @click="$router.push(`/profile/${review.profile._id}`)">{{review.profile.username}}</div>
             </div>
-            <div >
+            <div style="padding: 8px; display: flex;" v-if="isLoggedInUserReviewOwner" >
+                <EditReview :review="review" />
+                <v-btn @click="deleteReview" style="height: 30px; padding: 7px 10px;" class="mr-4" 
+                        color="red" >
+                    <img class="mr-2" :src="deleteReviewIcon" style="width: 20px; height: 20px;" />
+                    <div style="color: white;" >DELETE</div>
+                </v-btn>
+            </div>
+            <div>
                 <div style="display: flex; align-items: center; ">
                     <v-rating v-model="review.stars" background-color="orange lighten-3" color="orange" small
                         readonly hover ></v-rating>
@@ -25,18 +33,46 @@
 
 <script>
 import unknownUser2 from "../../../static/Icons/ProfileIcons/unknownUser2.svg"
+import deleteReviewIcon from "../../../static/Icons/BookDisplayIcons/deleteReview.svg"
+
+import EditReview from "./EditReview"
+import axios from "axios"
 
 export default {
     name: "Review",
-    components: {},
+    components: {EditReview},
     props: ["review"],
     data(){
         return {
-            unknownUser2
+            unknownUser2,
+            deleteReviewIcon,        
         }
     },
     methods: {
-
+        deleteReview(){
+            axios.delete(`/review/${this.review._id}`,
+            {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).then(res => {
+                console.log(res, "REVIEW POST RESPONSE")
+                this.editReviewLoading = false
+                this.dialog = false
+            }).catch(err => {
+                this.editReviewLoading = false
+                console.log(err.response)
+            })
+        },
+        isLoggedInUserReviewOwner(){
+            return this.review.profile === this.$store.getters['auth/getUserProfile'].id
+        }
+    },
+    created(){
+        console.log(this.review)
+    },
+    updated(){
+        console.log(this.review)
     }
 }
 </script>

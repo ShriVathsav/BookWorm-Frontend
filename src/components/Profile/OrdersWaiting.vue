@@ -1,5 +1,15 @@
 <template>
     <div>
+        <div class="font-weight-bold d-flex justify-center align-center flex-column" >
+            <div style="font-size: 14px;">FILTER BY ORDER STATUS</div>
+            <v-chip-group v-model="ordersWaitingFilters" @change="valueChanged"
+                    column multiple active-class="cyan white--text text--accent-4" >
+                <v-chip filter :disabled="loading" v-for="orderStatus in orderStatusList"
+                        :key="orderStatus" :value="orderStatus" >
+                    {{orderStatus}}
+                </v-chip>
+            </v-chip-group>
+        </div>
         <div v-if="loading">
             <Loader />
         </div>
@@ -8,16 +18,6 @@
                 <InfoPageButton :icon="ordersWaitingInfo" message="No orders waiting for you to fulfill" />
             </div>
             <div style="" v-else >
-                <div class="font-weight-bold d-flex justify-center align-center flex-column" >
-                    <div style="font-size: 14px;">FILTER BY ORDER STATUS</div>
-                    <v-chip-group v-model="ordersWaitingFilters" @change="valueChanged"
-                            column multiple active-class="cyan white--text text--accent-4" >
-                        <v-chip filter :disabled="filterLoading" v-for="orderStatus in orderStatusList"
-                                :key="orderStatus" :value="orderStatus" >
-                            {{orderStatus}}
-                        </v-chip>
-                    </v-chip-group>
-                </div>
                 <div class="font-weight-bold my-4" style="text-align: center; font-size: 20px;">
                     {{ordersWaiting.length}} orders waiting for you / fulfilled by you
                 </div>
@@ -58,8 +58,6 @@ import InfoPageButton from "../InfoPages/InfoPageButton"
 import Loader from "../UI/Loader"
 
 import axios from "axios"
-const API_URL1 = "https://4j5jc4gcn7.execute-api.ap-south-1.amazonaws.com/dev"
-//const API_URL2 = "http://localhost:8080"
 
 export default {
     name: "OrdersWaiting",
@@ -91,12 +89,12 @@ export default {
 
             emptyImage,
             
-            ordersWaitingFilters: ["IN PROGRESS", "IN TRANSIT", "COLLECTED", "DELIVERED"],
+            ordersWaitingFilters: ["IN PROGRESS", "IN TRANSIT", "DELIVERED"],
             filterLoading: false,
             ordersWaiting: [],
             orderStatusChangeShow: false,
             loading: false,            
-            orderStatusList: ["IN PROGRESS", "IN TRANSIT", "COLLECTED", "DELIVERED"],
+            orderStatusList: ["IN PROGRESS", "IN TRANSIT", "DELIVERED"],
         }
     },
     methods: {
@@ -105,19 +103,17 @@ export default {
                 return inProgressStatus
             } else if(this.orderStatus === "IN TRANSIT"){
                 return inTransitStatus
-            } else if(this.orderStatus === "COLLECTED"){
-                return collectedStatus
             } else if(this.orderStatus === "DELIVERED"){
                 return deliveredStatus
             }
         },
         valueChanged(filterValues) {
             console.log(filterValues, "CHIP VALUE CHANGHED")
-            this.filterLoading = true
+            this.loading = true
             this.getOrdersWaiting()
         },
         getOrdersWaiting() {
-            axios.get(`${API_URL1}/order/getAllWaiting/${this.$route.params.id}`, 
+            axios.get(`/order/getAllWaiting/${this.$route.params.id}`, 
                 { params: { 
                     statusValues: this.ordersWaitingFilters.length === 0 ? this.orderStatusList.toString() : this.ordersWaitingFilters.toString(),
                 }}
@@ -136,9 +132,6 @@ export default {
     created(){
         this.loading = true
         this.getOrdersWaiting()
-    },
-    updated() {
-        console.log(this.orderStatusList, "TEST CHIP")
     }
 }
 </script>

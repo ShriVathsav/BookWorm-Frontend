@@ -14,9 +14,9 @@ class Order {
         address1,
         address2,
         pincode,
-        status = "IN PROGRESS",
         createdAt,
         updatedAt,
+        status = "IN PROGRESS",
         id,
     ) {
         this.delivery_date = deliveryDate
@@ -31,9 +31,9 @@ class Order {
         this.address1 = address1
         this.address2 = address2
         this.pincode = pincode
-        this.status = status
         this.createdAt = createdAt
         this.updatedAt = updatedAt
+        this.status = status
         this.id = id
     }
 
